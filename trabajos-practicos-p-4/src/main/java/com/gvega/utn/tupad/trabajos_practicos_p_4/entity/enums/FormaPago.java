@@ -1,0 +1,8 @@
+package com.gvega.utn.tupad.trabajos_practicos_p_4.entity.enums;
+
+public enum FormaPago {
+
+	TARJETA,
+	TRANSFERENCIA,
+	EFECTIVO
+}
