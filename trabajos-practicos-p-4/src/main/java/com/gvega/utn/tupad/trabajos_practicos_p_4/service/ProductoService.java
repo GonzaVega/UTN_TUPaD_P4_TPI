@@ -8,6 +8,7 @@ import com.gvega.utn.tupad.trabajos_practicos_p_4.entity.Producto;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.repository.CategoriaRepository;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.repository.ProductoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,19 +23,23 @@ public class ProductoService {
 		this.categoriaRepository = categoriaRepository;
 	}
 
+	@Transactional
 	public ProductoDto create(ProductoCreate dto) {
 		return ProductoDto.toDto(productoRepository.save(dto.toEntity(getCategoria(dto.categoriaId()))));
 	}
 
+	@Transactional
 	public ProductoDto update(ProductoEdit dto) {
 		getEntity(dto.id());
 		return ProductoDto.toDto(productoRepository.save(dto.toEntity(getCategoria(dto.categoriaId()))));
 	}
 
+	@Transactional(readOnly = true)
 	public ProductoDto getById(Long id) {
 		return ProductoDto.toDto(getEntity(id));
 	}
 
+	@Transactional(readOnly = true)
 	public List<ProductoDto> getAll() {
 		return productoRepository.findAll().stream()
 				.filter(producto -> !producto.isEliminado())

@@ -10,6 +10,7 @@ import com.gvega.utn.tupad.trabajos_practicos_p_4.repository.PedidoRepository;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.repository.ProductoRepository;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class PedidoService {
 		this.productoRepository = productoRepository;
 	}
 
+	@Transactional
 	public PedidoDto create(PedidoEdit dto) {
 		Pedido pedido = dto.toEntity(getUsuario(dto.usuarioId()));
 		addDetalles(pedido, dto.detallePedidos());
@@ -35,6 +37,7 @@ public class PedidoService {
 		return PedidoDto.toDto(pedidoRepository.save(pedido));
 	}
 
+	@Transactional
 	public PedidoDto update(PedidoEdit dto) {
 		Pedido pedido = dto.toEntity(getUsuario(dto.usuarioId()));
 		pedido.getDetallePedidos().clear();
@@ -43,10 +46,12 @@ public class PedidoService {
 		return PedidoDto.toDto(pedidoRepository.save(pedido));
 	}
 
+	@Transactional(readOnly = true)
 	public PedidoDto getById(Long id) {
 		return PedidoDto.toDto(getEntity(id));
 	}
 
+	@Transactional(readOnly = true)
 	public List<PedidoDto> getAll() {
 		return pedidoRepository.findAll().stream()
 				.filter(pedido -> !pedido.isEliminado())
