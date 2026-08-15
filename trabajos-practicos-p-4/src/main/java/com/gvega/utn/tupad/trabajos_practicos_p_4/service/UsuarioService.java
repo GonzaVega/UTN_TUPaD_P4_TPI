@@ -6,6 +6,7 @@ import com.gvega.utn.tupad.trabajos_practicos_p_4.dto.usuario.UsuarioEdit;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.entity.Usuario;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.exception.ResourceNotFoundException;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.repository.UsuarioRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;

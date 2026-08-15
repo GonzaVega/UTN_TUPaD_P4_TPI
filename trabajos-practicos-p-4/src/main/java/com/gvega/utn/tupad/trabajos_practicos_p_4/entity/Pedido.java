@@ -2,6 +2,7 @@ package com.gvega.utn.tupad.trabajos_practicos_p_4.entity;
 
 import com.gvega.utn.tupad.trabajos_practicos_p_4.entity.enums.Estado;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.entity.enums.FormaPago;
+
 import jakarta.persistence.*;
 import lombok.*;
 

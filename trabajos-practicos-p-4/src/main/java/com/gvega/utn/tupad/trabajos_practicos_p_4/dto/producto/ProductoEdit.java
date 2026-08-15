@@ -2,6 +2,7 @@ package com.gvega.utn.tupad.trabajos_practicos_p_4.dto.producto;
 
 import com.gvega.utn.tupad.trabajos_practicos_p_4.entity.Categoria;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.entity.Producto;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

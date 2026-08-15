@@ -1,11 +1,13 @@
 package com.gvega.utn.tupad.trabajos_practicos_p_4.repository;
 
 import com.gvega.utn.tupad.trabajos_practicos_p_4.entity.Usuario;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
 import java.util.Optional;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-  Optional<Usuario> findByMail(String mail)
+  Optional<Usuario> findByMail(String mail);
 }

@@ -2,6 +2,7 @@ package com.gvega.utn.tupad.trabajos_practicos_p_4.dto.usuario;
 
 import com.gvega.utn.tupad.trabajos_practicos_p_4.entity.Usuario;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.entity.enums.Rol;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

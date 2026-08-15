@@ -1,6 +1,7 @@
 package com.gvega.utn.tupad.trabajos_practicos_p_4.dto.categoria;
 
 import com.gvega.utn.tupad.trabajos_practicos_p_4.entity.Categoria;
+
 import jakarta.validation.constraints.NotBlank;
 
 public record CategoriaCreate(
