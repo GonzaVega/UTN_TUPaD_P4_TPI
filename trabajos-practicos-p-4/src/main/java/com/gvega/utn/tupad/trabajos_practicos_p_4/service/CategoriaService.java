@@ -5,6 +5,8 @@ import com.gvega.utn.tupad.trabajos_practicos_p_4.dto.categoria.CategoriaDto;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.dto.categoria.CategoriaEdit;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.entity.Categoria;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.repository.CategoriaRepository;
+import com.gvega.utn.tupad.trabajos_practicos_p_4.exception.ResourceNotFoundException;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,6 +49,6 @@ public class CategoriaService {
 	private Categoria getEntity(Long id) {
 		return categoriaRepository.findById(id)
 				.filter(categoria -> !categoria.isEliminado())
-				.orElseThrow(() -> new RuntimeException("Categoria no encontrada: " + id));
+				.orElseThrow(() -> new ResourceNotFoundException("Categoria no encontrada: " + id));
 	}
 }

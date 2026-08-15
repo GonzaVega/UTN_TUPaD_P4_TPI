@@ -5,6 +5,7 @@ import com.gvega.utn.tupad.trabajos_practicos_p_4.dto.producto.ProductoDto;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.dto.producto.ProductoEdit;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.entity.Categoria;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.entity.Producto;
+import com.gvega.utn.tupad.trabajos_practicos_p_4.exception.ResourceNotFoundException;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.repository.CategoriaRepository;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.repository.ProductoRepository;
 import org.springframework.stereotype.Service;
@@ -56,12 +57,12 @@ public class ProductoService {
 	private Producto getEntity(Long id) {
 		return productoRepository.findById(id)
 				.filter(producto -> !producto.isEliminado())
-				.orElseThrow(() -> new RuntimeException("Producto no encontrado: " + id));
+				.orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado: " + id));
 	}
 
 	private Categoria getCategoria(Long categoriaId) {
 		return categoriaRepository.findById(categoriaId)
 				.filter(categoria -> !categoria.isEliminado())
-				.orElseThrow(() -> new RuntimeException("Categoria no encontrada: " + categoriaId));
+				.orElseThrow(() -> new ResourceNotFoundException("Categoria no encontrada: " + categoriaId));
 	}
 }

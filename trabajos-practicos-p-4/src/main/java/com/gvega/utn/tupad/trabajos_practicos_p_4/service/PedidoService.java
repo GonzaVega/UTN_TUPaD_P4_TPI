@@ -6,6 +6,7 @@ import com.gvega.utn.tupad.trabajos_practicos_p_4.dto.pedido.PedidoEdit;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.entity.Pedido;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.entity.Producto;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.entity.Usuario;
+import com.gvega.utn.tupad.trabajos_practicos_p_4.exception.ResourceNotFoundException;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.repository.PedidoRepository;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.repository.ProductoRepository;
 import com.gvega.utn.tupad.trabajos_practicos_p_4.repository.UsuarioRepository;
@@ -68,13 +69,13 @@ public class PedidoService {
 	private Pedido getEntity(Long id) {
 		return pedidoRepository.findById(id)
 				.filter(pedido -> !pedido.isEliminado())
-				.orElseThrow(() -> new RuntimeException("Pedido no encontrado: " + id));
+				.orElseThrow(() -> new ResourceNotFoundException("Pedido no encontrado: " + id));
 	}
 
 	private Usuario getUsuario(Long usuarioId) {
 		return usuarioRepository.findById(usuarioId)
 				.filter(usuario -> !usuario.isEliminado())
-				.orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + usuarioId));
+				.orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado: " + usuarioId));
 	}
 
 	private void addDetalles(Pedido pedido, List<DetallePedidoCreate> detalles) {
@@ -84,7 +85,7 @@ public class PedidoService {
 		for (DetallePedidoCreate detalle : detalles) {
 			Producto producto = productoRepository.findById(detalle.productoId())
 					.filter(p -> !p.isEliminado())
-					.orElseThrow(() -> new RuntimeException("Producto no encontrado: " + detalle.productoId()));
+					.orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado: " + detalle.productoId()));
 			pedido.getDetallePedidos().add(detalle.toEntity(pedido, producto));
 		}
 	}
