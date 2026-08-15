@@ -1,0 +1,27 @@
+# Documentos de consignas (no se suben)
+/Consignas TP
+
+# Junk del sistema
+.DS_Store
+
+# IDE a nivel raíz
+.idea/
+.vscode/
+.settings/
+.classpath
+.project
+out/
+
+# Compilación / build
+build/
+target/
+
+# Bases de datos H2 y archivos generados
+data/
+*.db
+*.mv.db
+*.trace.db
+*.lock.db
+
+# Logs
+*.log
