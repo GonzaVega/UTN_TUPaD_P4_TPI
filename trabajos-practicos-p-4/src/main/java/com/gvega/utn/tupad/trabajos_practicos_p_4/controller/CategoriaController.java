@@ -39,7 +39,7 @@ public class CategoriaController {
     }
 
     @PutMapping
-    public ResponseEntity<CategoriaDto> update(@Valid@RequestBody CategoriaEdit dto) {
+    public ResponseEntity<CategoriaDto> update(@Valid @RequestBody CategoriaEdit dto) {
         return ResponseEntity.ok(categoriaService.update(dto));
     }
 
