@@ -106,56 +106,67 @@ POST {{baseUrl}}/proveedores/
 Content-Type: application/json
 
 {
-  "nombre": "Proveedor 1",
-  "categoria": "ARG-01",
-  "precio": 250.00,
-  "stock": 10,
-  "stock_minimo": 5,
+  "codigo": "PROV-01",
+  "razon_social": "Proveedor 1",
+  "cuit": "11223344556",
+  "email": "proveedor@proveedor.com",
+  "telefono": "1234567890",
   "activo": true
 }
 
-### 15. Listar Proveedores (Prueba: Query Parameters)
-GET {{baseUrl}}/proveedores/?skip=0&limit=5
-
-### 16. Detalle Proveedor Exitoso (Prueba: Path Parameters y Response Model)
-GET {{baseUrl}}/proveedores/1
-
-### 17. Actualizar Proveedor (Reemplazo total)
-# Bajamos el stock a 3 para forzar la alerta de "bajo_stock_minimo"
-PUT {{baseUrl}}/proveedores/1
-Content-Type: application/json
-
-{
-  "nombre": "Silla Ergonómica Premium",
-  "categoria": "MUE-01",
-  "precio": 299.99,
-  "stock": 20,
-  "stock_minimo": 5,
-  "activo": true
-}
-
-### 18. Consultar Alerta de Stock (Prueba: Lógica de negocio dinámica)
-# Debería retornar "bajo_stock_minimo": true debido al PUT anterior
-GET {{baseUrl}}/proveedores/1/stock
-
-### 19. Desactivar Proveedor (Borrado Lógico)
-PUT {{baseUrl}}/proveedores/1/desactivar
-
-### 20. Detalle Proveedor Inexistente (Prueba: Manejo de Errores 404)
-GET {{baseUrl}}/proveedores/99
-
-### 21. Proveedor Inválido (Prueba: Error 422 automático)
-# Falla porque: 
-# - La categoría no cumple el Regex.
-# - El precio es negativo.
+### 15. Crear Proveedor falla por ya existir (status 409 conflict)
 POST {{baseUrl}}/proveedores/
 Content-Type: application/json
 
 {
-  "nombre": "Proveedor Invalido",
-  "categoria": "ARG-02",
-  "precio": -50.00,
-  "stock": 5,
-  "stock_minimo": 5,
+  "codigo": "PROV-01",
+  "razon_social": "Proveedor 1",
+  "cuit": "11223344556",
+  "email": "proveedor@proveedor.com",
+  "telefono": "1234567890",
+  "activo": true
+}
+
+### 16. Listar Proveedores (Prueba: Query Parameters)
+GET {{baseUrl}}/proveedores/?skip=0&limit=5&activo=true
+
+### 17. Detalle Proveedor Exitoso (Prueba: Path Parameters y Response Model)
+GET {{baseUrl}}/proveedores/1
+
+### 18. Actualizar Proveedor (Reemplazo total)
+# Cambiamos el telefono
+PUT {{baseUrl}}/proveedores/1
+Content-Type: application/json
+
+{
+  "codigo": "PROV-01",
+  "razon_social": "Proveedor 1",
+  "cuit": "11223344556",
+  "email": "proveedor@proveedor.com",
+  "telefono": "9876543210",
+  "activo": true
+}
+
+### 19. Desactivar Proveedor (Borrado Lógico)
+PUT {{baseUrl}}/proveedores/1/desactivar
+
+### 20. Desactivar Proveedor que ya esta desactivado (status 409 conflict)
+PUT {{baseUrl}}/proveedores/1/desactivar
+
+### 21. Detalle Proveedor Inexistente (Prueba: Manejo de Errores 404)
+GET {{baseUrl}}/proveedores/99
+
+### 22. Proveedor Inválido (Prueba: Error 422 automático)
+# Falla porque: 
+# - La razon social es muy corta.
+POST {{baseUrl}}/proveedores/
+Content-Type: application/json
+
+{
+  "codigo": "PROV-02",
+  "razon_social": "G",
+  "cuit": "11223344556",
+  "email": "[EMAIL_ADDRESS]",
+  "telefono": "1234567890",
   "activo": true
 }

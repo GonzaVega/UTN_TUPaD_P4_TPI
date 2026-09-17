@@ -63,6 +63,10 @@ def actualizar_proveedor(proveedor: schemas.ProveedorCreate, id: int = Path(...,
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Proveedor no encontrado"
         )
+    if actualizado == 'Codigo existente':
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Codigo existente"
+        )
     return actualizado
 
 

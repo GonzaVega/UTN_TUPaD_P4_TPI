@@ -34,13 +34,19 @@ def obtener_por_id(id: int) -> Optional[ProveedorRead]:
 
 # Reemplazo total: Requiere todos los campos validables (ProveedorCreate)
 def actualizar_total(id: int, data: ProveedorCreate) -> Optional[ProveedorRead]:
-    for index, p in enumerate(db_proveedores):
-        if p.id == id:
-            proveedor_actualizado = ProveedorRead(id=id, **data.model_dump())
-            db_proveedores[index] = proveedor_actualizado
-            return proveedor_actualizado
-    return None
+    proveedor_actualizado = obtener_por_id(id)
+    
+    if proveedor_actualizado is None:
+        return None
+    
+    if data.codigo in [p.codigo for p in db_proveedores if p.id !=id]:
+        return "Codigo existente"
 
+    index = db_proveedores.index(proveedor_actualizado)
+    proveedor_actualizado = ProveedorRead(id=id, **data.model_dump())
+    db_proveedores[index] = proveedor_actualizado
+    return proveedor_actualizado
+    
 
 # Borrado lógico: Solo altera el estado 'activo'
 def desactivar(id: int) -> Optional[ProveedorRead]:
