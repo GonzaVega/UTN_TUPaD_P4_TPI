@@ -24,7 +24,7 @@ Este proyecto implementa el modelo orientado a objetos del catálogo de producto
 La estructura del proyecto respeta la organización solicitada:
 
 - **`README.md`**: Descripción del proyecto, detalle de qué resuelve cada archivo e instrucciones de ejecución.
-- **`catalogo.py`**: Módulo principal que contiene la totalidad del modelo de dominio (clases `UnidadMedida`, `Categoria`, `ProductoCategoria`, `Exportable`, `Producto`, `ProductoSimple`, `ProductoPorPeso`, `ProductoCombo`, la función `exportar_catalogo` y las excepciones de dominio al final del archivo).
+- **`catalogo.py`**: Módulo principal que contiene la totalidad del modelo de dominio: la excepción `ErrorDominio` al comienzo, seguida de las clases `UnidadMedida`, `Categoria`, `ProductoCategoria`, el protocolo `Exportable`, la clase base abstracta `Producto` y sus subclases concretas `ProductoSimple`, `ProductoPorPeso` y `ProductoCombo`, y la función `exportar_catalogo`.
 - **`libreria_externa.py`**: Archivo provisto por la cátedra que contiene la clase `FichaPuntoDeVenta`. No se modifica en ninguna línea.
 - **`main.py`**: Script ejecutable que instancia el catálogo, clasifica productos, asigna unidades de medida, calcula precios finales, demuestra las relaciones estructurales, valida fallas tempranas y exporta polimórficamente los datos por consola.
 - **`link_video.txt`**: Archivo de texto plano para incorporar el enlace al video de defensa individual obligatorio.
