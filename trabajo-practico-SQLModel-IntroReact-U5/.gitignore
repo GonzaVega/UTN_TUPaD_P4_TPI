@@ -1,0 +1,19 @@
+# Entornos virtuales de Python
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Dependencias de Node
+node_modules/
+dist/
+
+# Variables de entorno locales
+.env
+
+# Configuración de editores y SO
+.vscode/
+.idea/
+.DS_Store
+*.log

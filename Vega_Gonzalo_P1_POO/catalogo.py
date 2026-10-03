@@ -71,7 +71,6 @@ class Producto(ABC):
     self._precio_base: float = float(precio_base)
     self._stock_cantidad: float = float(stock_cantidad)
     self._habilitado: bool = True
-    # Asociación: la categoria es independiente y no conoce a producto categoria, quien solamente conoce a categoria.
     self._unidad_venta: UnidadMedida | None = unidad_venta
     self._orden_vidriera: int | None = None
 

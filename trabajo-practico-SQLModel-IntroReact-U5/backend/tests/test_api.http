@@ -1,0 +1,134 @@
+@baseUrl = http://127.0.0.1:8000
+
+### =========================================================
+### PRUEBAS DE LA API GESTOR DE PRODUCTOS (SQLModel + PostgreSQL)
+### =========================================================
+
+### 1. Root / Estado del Servidor
+GET {{baseUrl}}/
+Accept: application/json
+
+### 2. Crear Producto Exitoso (POST 201)
+# Demuestra inserción y persistencia en PostgreSQL mediante SQLModel
+POST {{baseUrl}}/productos/
+Content-Type: application/json
+
+{
+  "nombre": "Auriculares Inalámbricos Pro",
+  "descripcion": "Auriculares con cancelación activa de ruido y estuche de carga",
+  "categoria": "Electrónica",
+  "precio": 89.99,
+  "stock": 15,
+  "stock_minimo": 5,
+  "activo": true
+}
+
+### 3. Crear Segundo Producto (POST 201)
+POST {{baseUrl}}/productos/
+Content-Type: application/json
+
+{
+  "nombre": "Silla Ergonómica Confort",
+  "descripcion": "Silla de oficina con soporte lumbar ajustable",
+  "categoria": "Hogar",
+  "precio": 249.50,
+  "stock": 3,
+  "stock_minimo": 5,
+  "activo": true
+}
+
+### 4. Regla de Negocio: Nombre Duplicado (POST 409 Conflict)
+# HU-02: Conflictos de negocio (nombre duplicado) devuelven 409
+POST {{baseUrl}}/productos/
+Content-Type: application/json
+
+{
+  "nombre": "Auriculares Inalámbricos Pro",
+  "descripcion": "Intento de registrar producto duplicado",
+  "categoria": "Electrónica",
+  "precio": 99.00,
+  "stock": 10,
+  "stock_minimo": 2,
+  "activo": true
+}
+
+### 5. Validación Pydantic: Precio Negativo (POST 422 Unprocessable Entity)
+# RN-03: El precio debe ser un número mayor o igual a 0
+POST {{baseUrl}}/productos/
+Content-Type: application/json
+
+{
+  "nombre": "Teclado Mecánico",
+  "descripcion": "Teclado inválido con precio negativo",
+  "categoria": "Electrónica",
+  "precio": -15.00,
+  "stock": 5,
+  "stock_minimo": 1,
+  "activo": true
+}
+
+### 6. Validación Pydantic: Nombre Vacío o Solo Espacios (POST 422)
+# RN-02: El nombre no puede quedar vacío ni contener solo espacios
+POST {{baseUrl}}/productos/
+Content-Type: application/json
+
+{
+  "nombre": "   ",
+  "descripcion": "Nombre inválido",
+  "categoria": "Electrónica",
+  "precio": 25.00,
+  "stock": 5,
+  "stock_minimo": 1,
+  "activo": true
+}
+
+### 7. Listar Todos los Productos (GET 200)
+GET {{baseUrl}}/productos/
+Accept: application/json
+
+### 8. Listar Productos con Paginación (GET 200 con skip y limit)
+GET {{baseUrl}}/productos/?skip=0&limit=1
+Accept: application/json
+
+### 9. Filtrar Productos por Categoría (GET 200)
+GET {{baseUrl}}/productos/?categoria=Electrónica
+Accept: application/json
+
+### 10. Detalle de Producto Existente (GET 200)
+GET {{baseUrl}}/productos/1
+Accept: application/json
+
+### 11. Detalle de Producto Inexistente (GET 404 Not Found)
+# RN-04: No se puede consultar un producto cuyo id no exista
+GET {{baseUrl}}/productos/9999
+Accept: application/json
+
+### 12. Actualizar Producto (PUT 200)
+PUT {{baseUrl}}/productos/1
+Content-Type: application/json
+
+{
+  "nombre": "Auriculares Inalámbricos Pro Max",
+  "descripcion": "Versión actualizada con mayor autonomía",
+  "precio": 109.99,
+  "stock": 20
+}
+
+### 13. Consultar Alerta de Stock (GET 200)
+# Para el producto 2 (Silla Ergonómica Confort con stock=3 y stock_minimo=5),
+# bajo_stock_minimo debe dar true
+GET {{baseUrl}}/productos/2/stock
+Accept: application/json
+
+### 14. Desactivar Producto (Borrado Lógico) (PUT 200)
+PUT {{baseUrl}}/productos/2/desactivar
+Accept: application/json
+
+### 15. Eliminar Producto Físicamente (DELETE 200)
+# RN-05: Toda operación de escritura persiste en PostgreSQL mediante sesión
+DELETE {{baseUrl}}/productos/1
+Accept: application/json
+
+### 16. Verificar Eliminación: Consultar ID Eliminado (GET 404)
+GET {{baseUrl}}/productos/1
+Accept: application/json

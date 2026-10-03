@@ -1,0 +1,248 @@
+{
+  "info": {
+    "_postman_id": "b8a927a4-94fe-4821-bbf2-892cb6478912",
+    "name": "TP5 - Gestor de Productos (SQLModel + PostgreSQL)",
+    "description": "Colección completa para probar todos los endpoints del backend FastAPI migrado a PostgreSQL con SQLModel.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Root - Estado del Servidor",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/",
+          "host": ["{{baseUrl}}"],
+          "path": [""]
+        }
+      }
+    },
+    {
+      "name": "2. Crear Producto 1 (POST 201)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Auriculares Inalámbricos Pro\",\n  \"descripcion\": \"Auriculares con cancelación activa de ruido y estuche de carga\",\n  \"categoria\": \"Electrónica\",\n  \"precio\": 89.99,\n  \"stock\": 15,\n  \"stock_minimo\": 5,\n  \"activo\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/productos/",
+          "host": ["{{baseUrl}}"],
+          "path": ["productos", ""]
+        }
+      }
+    },
+    {
+      "name": "3. Crear Producto 2 (POST 201)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Silla Ergonómica Confort\",\n  \"descripcion\": \"Silla de oficina con soporte lumbar ajustable\",\n  \"categoria\": \"Hogar\",\n  \"precio\": 249.50,\n  \"stock\": 3,\n  \"stock_minimo\": 5,\n  \"activo\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/productos/",
+          "host": ["{{baseUrl}}"],
+          "path": ["productos", ""]
+        }
+      }
+    },
+    {
+      "name": "4. Nombre Duplicado (POST 409 Conflict)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Auriculares Inalámbricos Pro\",\n  \"descripcion\": \"Duplicado\",\n  \"categoria\": \"Electrónica\",\n  \"precio\": 99.00,\n  \"stock\": 10,\n  \"stock_minimo\": 2,\n  \"activo\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/productos/",
+          "host": ["{{baseUrl}}"],
+          "path": ["productos", ""]
+        }
+      }
+    },
+    {
+      "name": "5. Error Validación - Precio Negativo (POST 422)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Teclado Mecánico\",\n  \"precio\": -15.00,\n  \"stock\": 5,\n  \"stock_minimo\": 1\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/productos/",
+          "host": ["{{baseUrl}}"],
+          "path": ["productos", ""]
+        }
+      }
+    },
+    {
+      "name": "6. Error Validación - Nombre Vacío (POST 422)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"   \",\n  \"precio\": 25.00,\n  \"stock\": 5,\n  \"stock_minimo\": 1\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/productos/",
+          "host": ["{{baseUrl}}"],
+          "path": ["productos", ""]
+        }
+      }
+    },
+    {
+      "name": "7. Listar Productos (GET 200)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/productos/",
+          "host": ["{{baseUrl}}"],
+          "path": ["productos", ""]
+        }
+      }
+    },
+    {
+      "name": "8. Listar Productos Paginados (GET 200)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/productos/?skip=0&limit=10",
+          "host": ["{{baseUrl}}"],
+          "path": ["productos", ""],
+          "query": [
+            {
+              "key": "skip",
+              "value": "0"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "9. Detalle de Producto por ID (GET 200)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/productos/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["productos", "1"]
+        }
+      }
+    },
+    {
+      "name": "10. Detalle de ID Inexistente (GET 404)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/productos/9999",
+          "host": ["{{baseUrl}}"],
+          "path": ["productos", "9999"]
+        }
+      }
+    },
+    {
+      "name": "11. Actualizar Producto (PUT 200)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Auriculares Inalámbricos Pro Max\",\n  \"precio\": 109.99,\n  \"stock\": 20\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/productos/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["productos", "1"]
+        }
+      }
+    },
+    {
+      "name": "12. Consultar Alerta de Stock (GET 200)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/productos/2/stock",
+          "host": ["{{baseUrl}}"],
+          "path": ["productos", "2", "stock"]
+        }
+      }
+    },
+    {
+      "name": "13. Borrado Lógico - Desactivar (PUT 200)",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/productos/2/desactivar",
+          "host": ["{{baseUrl}}"],
+          "path": ["productos", "2", "desactivar"]
+        }
+      }
+    },
+    {
+      "name": "14. Eliminar Producto Físicamente (DELETE 200)",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/productos/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["productos", "1"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000"
+    }
+  ]
+}
