@@ -3,10 +3,6 @@ from sqlmodel import Field, SQLModel
 
 
 class Producto(SQLModel, table=True):
-    """
-    Modelo de persistencia para la tabla 'productos' en PostgreSQL.
-    Cumple con RN-01, RN-02, RN-03, RN-05 y RN-06.
-    """
     __tablename__ = "productos"
 
     id: Optional[int] = Field(default=None, primary_key=True)

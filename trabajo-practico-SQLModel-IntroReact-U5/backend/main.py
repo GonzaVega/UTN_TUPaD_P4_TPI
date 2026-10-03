@@ -2,16 +2,14 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import create_db_and_tables
-import app.models  # Asegura el registro de todos los modelos en SQLModel.metadata
+import app.models
 from app.routers import producto_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Evento Startup: Creación automática de tablas en PostgreSQL si no existen
     create_db_and_tables()
     yield
-    # Evento Shutdown (limpieza si fuera necesaria)
 
 
 def create_app() -> FastAPI:
@@ -22,7 +20,6 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    # Configuración de CORS para permitir la comunicación con el frontend React (localhost:5173)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[
@@ -34,7 +31,6 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    # Registro de routers
     app.include_router(producto_router)
 
     @app.get("/", tags=["Root"])

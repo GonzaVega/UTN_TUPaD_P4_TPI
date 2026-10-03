@@ -4,8 +4,6 @@ import { ProductoForm } from "./components/ProductoForm";
 import { ProductoList } from "./components/ProductoList";
 import { Footer } from "./components/Footer";
 
-// Datos mock estáticos (al menos 3 productos hardcodeados requeridos por HU-04)
-// Replicamos con exactitud los 5 productos de la captura oficial (tp5_img-040.png)
 const PRODUCTOS_INICIALES: Producto[] = [
   {
     id: 1,
@@ -48,18 +46,14 @@ export function App() {
   return (
     <div className="min-h-screen bg-[#f8fafc] text-gray-800 font-sans antialiased px-4 selection:bg-indigo-100 selection:text-indigo-800">
       <div className="max-w-2xl mx-auto">
-        {/* Barra superior con encabezado */}
         <Navbar />
 
         <main>
-          {/* Formulario maquetado estático sin hooks ni lógica de estado (HU-06) */}
           <ProductoForm />
 
-          {/* Listado que recibe el arreglo Producto[] y mapea en ProductoCard */}
           <ProductoList productos={PRODUCTOS_INICIALES} />
         </main>
 
-        {/* Pie de página institucional */}
         <Footer />
       </div>
     </div>

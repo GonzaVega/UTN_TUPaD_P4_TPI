@@ -18,7 +18,6 @@ export const ProductoList = ({ productos }: ProductoListProps) => {
       </div>
 
       <div className="w-full">
-        {/* Cabecera de columnas tal como en la captura del apunte */}
         <div className="flex items-center justify-between text-xs font-semibold text-gray-400 uppercase tracking-wider px-4 pb-3 border-b border-gray-100">
           <div className="flex items-center gap-4">
             <span className="w-6 text-center">ID</span>
@@ -30,7 +29,6 @@ export const ProductoList = ({ productos }: ProductoListProps) => {
           </div>
         </div>
 
-        {/* Mapeo de productos utilizando el método .map() con key obligatoria */}
         <div className="divide-y divide-gray-100">
           {productos.map((producto) => (
             <ProductoCard key={producto.id} producto={producto} />

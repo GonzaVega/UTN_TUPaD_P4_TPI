@@ -3,7 +3,6 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class ProductoBase(BaseModel):
-    """Contrato base con las validaciones requeridas por las consignas (RN-02, RN-03)."""
     nombre: str = Field(..., min_length=1, description="Nombre obligatorio del producto")
     descripcion: Optional[str] = Field(default=None, description="Descripción opcional")
     categoria: Optional[str] = Field(default=None, description="Categoría del producto")
@@ -15,19 +14,16 @@ class ProductoBase(BaseModel):
     @field_validator("nombre")
     @classmethod
     def validar_nombre_no_vacio(cls, value: str) -> str:
-        """RN-02: El nombre del producto es obligatorio y no puede quedar vacío ni contener solo espacios."""
         if not value or not value.strip():
             raise ValueError("El nombre no puede quedar vacío ni contener solo espacios.")
         return value.strip()
 
 
 class ProductoCreate(ProductoBase):
-    """Esquema para la creación (POST). Exige todos los datos obligatorios."""
     pass
 
 
 class ProductoUpdate(BaseModel):
-    """Esquema para la actualización (PUT/PATCH). Campos opcionales para flexibilidad."""
     nombre: Optional[str] = Field(default=None, min_length=1)
     descripcion: Optional[str] = None
     categoria: Optional[str] = None
@@ -45,14 +41,12 @@ class ProductoUpdate(BaseModel):
 
 
 class ProductoResponse(ProductoBase):
-    """Esquema de salida seguro con el identificador asignado por la base de datos."""
     id: int
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class ProductoStockResponse(BaseModel):
-    """Esquema de salida para consulta de estado de stock y regla de negocio de alerta."""
     id: int
     nombre: str
     stock: int
