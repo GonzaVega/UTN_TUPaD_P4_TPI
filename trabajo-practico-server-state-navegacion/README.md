@@ -3,13 +3,14 @@
 **Materia:** Programación IV  
 **Carrera:** Tecnicatura Universitaria en Programación a Distancia (TUPaD)  
 **Institución:** Universidad Tecnológica Nacional (UTN)  
-**Alumno:** Gonzalo Vega  
+**Alumno:** Gonzalo Vega
 
 ---
 
 ## 🎯 Objetivo del Trabajo Práctico
 
 Construir una solución Full Stack incremental respecto al Trabajo Práctico 6, conectando una interfaz moderna en **React + TypeScript + Vite + Tailwind CSS** con una API REST en **FastAPI + SQLModel**:
+
 - **Gestión del Estado del Servidor (Server State):** Reemplazar los llamados manuales en `useEffect` por **TanStack Query** (`useQuery` y `useMutation`), aplicando invalidación automática de caché ante mutaciones de datos.
 - **Enrutamiento Declarativo (Client-Side Routing):** Organizar la navegación con **React Router** (`react-router-dom`), separando las vistas en páginas dedicadas (`CategoriasPage` y `ProductsPage`).
 - **Desacoplamiento de Responsabilidades:** Eliminar la lógica de negocio de `App.tsx`, delegándole únicamente la renderización del `Navbar` y la definición de rutas.
@@ -87,6 +88,7 @@ trabajo-practico-server-state-navegacion/
 ## 🧭 Evaluación del Diagrama de Dominio (`UML_foodstore.png`)
 
 En el material provisto se encuentra el diagrama `UML_foodstore.png`. Al analizarlo:
+
 - Contiene tres contextos delimitados:
   1. **Identidad & Acceso:** Modelos `Usuario`, `Rol`, `UsuarioRol` y `DireccionEntrega`.
   2. **Ventas & Transacciones:** Modelos `Pedido`, `DetallePedido`, `EstadoPedido`, `HistorialEstadoPedido` y `FormaPago`.
@@ -97,14 +99,14 @@ En el material provisto se encuentra el diagrama `UML_foodstore.png`. Al analiza
 
 ## 🔄 Principales Mejoras e Incrementos (TP6 ➡️ TP7)
 
-| Aspecto | Trabajo Práctico 6 | Trabajo Práctico 7 |
-| :--- | :--- | :--- |
-| **Páginas / Rutas** | Vista única monolítica en `App.tsx` | Rutas separadas con **React Router** (`/categorias` y `/productos`) |
-| **Responsabilidad de `App.tsx`** | Manejaba estado, fetch y renderizado | Solo renderiza `Navbar` y define el mapeo de `<Routes>` |
-| **Lectura de Datos** | `useEffect` con `fetch` manual | **TanStack Query** `useQuery` con deduplicación y caché |
-| **Modificación de Datos** | Funciones `fetch` manuales con setState | **TanStack Query** `useMutation` con `invalidateQueries` |
-| **Capa de Servicios** | Funciones fetch integradas en la vista | Carpeta `services/` desacoplada y reutilizable |
-| **Catálogo de Productos** | Solo probado vía backend (`.http`) | Vista de catálogo navegable (`ProductsPage`) con tarjetas visuales |
+| Aspecto                          | Trabajo Práctico 6                      | Trabajo Práctico 7                                                  |
+| :------------------------------- | :-------------------------------------- | :------------------------------------------------------------------ |
+| **Páginas / Rutas**              | Vista única monolítica en `App.tsx`     | Rutas separadas con **React Router** (`/categorias` y `/productos`) |
+| **Responsabilidad de `App.tsx`** | Manejaba estado, fetch y renderizado    | Solo renderiza `Navbar` y define el mapeo de `<Routes>`             |
+| **Lectura de Datos**             | `useEffect` con `fetch` manual          | **TanStack Query** `useQuery` con deduplicación y caché             |
+| **Modificación de Datos**        | Funciones `fetch` manuales con setState | **TanStack Query** `useMutation` con `invalidateQueries`            |
+| **Capa de Servicios**            | Funciones fetch integradas en la vista  | Carpeta `services/` desacoplada y reutilizable                      |
+| **Catálogo de Productos**        | Solo probado vía backend (`.http`)      | Vista de catálogo navegable (`ProductsPage`) con tarjetas visuales  |
 
 ---
 
@@ -115,7 +117,6 @@ En el material provisto se encuentra el diagrama `UML_foodstore.png`. Al analiza
 ```bash
 cd backend
 python3 -m venv .venv
-# En distribuciones Linux sin ensurepip: virtualenv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 python -m uvicorn main:app --reload --port 8000
@@ -131,7 +132,6 @@ En otra terminal:
 ```bash
 cd frontend
 pnpm install
-# O alternativamente: npm install
 pnpm dev
 ```
 
