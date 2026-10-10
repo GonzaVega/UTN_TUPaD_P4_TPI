@@ -7,5 +7,6 @@ export interface Producto {
   precio_base: number;
   imagen_url?: string;
   disponible: boolean;
+  activo?: boolean;
   categorias?: Categoria[];
 }

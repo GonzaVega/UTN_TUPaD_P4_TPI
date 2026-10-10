@@ -6,9 +6,6 @@ if TYPE_CHECKING:
 
 
 class ProductoCategoria(SQLModel, table=True):
-    """Tabla intermedia para modelar la relación Muchos a Muchos (N:N)
-    entre Producto y Categoria con clave primaria compuesta.
-    """
     __tablename__ = "producto_categoria"
 
     producto_id: Optional[int] = Field(
@@ -24,14 +21,13 @@ class ProductoCategoria(SQLModel, table=True):
 
 
 class Categoria(SQLModel, table=True):
-    """Entidad persistente de Categoría."""
     __tablename__ = "categorias"
 
     id: Optional[int] = Field(default=None, primary_key=True)
     nombre: str = Field(index=True, nullable=False)
     descripcion: Optional[str] = Field(default=None)
+    activo: bool = Field(default=True, nullable=False)
 
-    # Relación N:N con Producto mediante la tabla intermedia
     productos: List["Producto"] = Relationship(
         back_populates="categorias",
         link_model=ProductoCategoria

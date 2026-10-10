@@ -25,7 +25,8 @@ backend/
 │   ├── main.py             # Instancia FastAPI, configuración CORS e inclusión de routers
 │   ├── core/
 │   │   ├── __init__.py
-│   │   └── database.py     # Engine, SessionDep, create_engine e init_db()
+│   │   ├── database.py     # Engine, SessionDep, create_engine e init_db()
+│   │   └── seed.py         # Poblado inicial (seed) con 3 categorías y 10 productos
 │   ├── categoria/
 │   │   ├── __init__.py
 │   │   ├── router.py       # Endpoints HTTP para Categorías (/categorias)
@@ -42,9 +43,39 @@ backend/
 ├── .env.example
 ├── .gitignore
 ├── requirements.txt        # Dependencias de Python
-├── test_api.http           # Demostración exhaustiva para extensión REST Client de VS Code
+├── test_api.http           # Demostración exhaustiva de 25 pruebas para REST Client
 └── README.md
 ```
+
+---
+
+## 🌱 Carga Inicial de Datos (Database Seeding)
+
+El sistema incluye una rutina de **seed inicial** para dotar a la base de datos de datos consistentes desde el primer arranque:
+
+- **Ejecución en el arranque (`lifespan`):** Al levantar la API, `init_db()` verifica si las tablas `categorias` o `productos` poseen registros. Si la base está vacía, se insertan automáticamente:
+  - **3 Categorías:** `Pizzas`, `Hamburguesas` y `Bebidas`.
+  - **10 Productos:** 4 pizzas (*Margherita, Cuatro Quesos, Pepperoni, Fugazzeta*), 4 hamburguesas (*Clásica, Doble Cheddar & Bacon, Crispy Chicken, Veggie Burger*) y 2 bebidas (*Limonada Menta y Jengibre, Cerveza Artesanal IPA*).
+  - **Asociaciones N:N:** Se insertan los registros en `producto_categoria` asignando cada producto a su categoría respectiva.
+- **Idempotencia:** Si ya existen datos, el proceso se omite automáticamente para no sobreescribir ni duplicar registros.
+- **Comando manual para resetear y sembrar:**
+  ```bash
+  python -m app.core.seed --reset
+  ```
+
+---
+
+## 🛡️ Borrado Lógico (Soft Delete)
+
+El backend implementa **Soft Delete** en las operaciones de eliminación para evitar la pérdida destructiva de datos y preservar la integridad referencial en relaciones N:N:
+
+- **Modelos (`Categoria` y `Producto`):** Cuentan con el atributo `activo: bool = Field(default=True)`.
+- **Servicios:**
+  - `eliminar_categoria(session, id)` y `eliminar_producto(session, id)` marcan `entidad.activo = False` y realizan el commit.
+  - `obtener_todas` y `obtener_todos` filtran automáticamente registros con `activo == True`.
+  - `obtener_por_id` lanza un error HTTP 404 si el registro existe en la base pero posee `activo == False`.
+  - La creación (`crear_categoria`) detecta si existe un registro inactivo con el mismo nombre y lo reactiva de forma transparente con los nuevos atributos.
+- **Relaciones N:N:** Las consultas de productos con categorías anidadas (`/productos/{id}`) filtran únicamente las categorías activas.
 
 ---
 
@@ -55,6 +86,8 @@ backend/
 En Linux / macOS:
 ```bash
 python3 -m venv .venv
+# Nota: Si tu distribución (ej. Ubuntu/Debian) no incluye ensurepip, usar:
+# virtualenv .venv   (o: sudo apt install python3-venv)
 source .venv/bin/activate
 ```
 
@@ -93,7 +126,7 @@ El servidor estará accesible en: `http://localhost:8000`
 
 ## 🧪 Demostración con REST Client (`test_api.http`)
 
-El archivo [`test_api.http`](./test_api.http) contiene 29 casos de prueba listos para ser ejecutados desde Visual Studio Code con la extensión *REST Client*:
-1. **CRUD Categorías:** altas, bajas, modificaciones, consultas y validación de conflicto de nombres (409 Conflict).
-2. **CRUD Productos:** catálogo con precios, disponibilidad y validaciones de datos.
-3. **Relación N:N (`Producto_Categoria`):** asociación de productos a categorías en la tabla intermedia, demostración de producto con múltiples categorías, validación de conflicto si la relación ya existe (409 Conflict) y validación de entidades inexistentes (404 Not Found).
+El archivo [`test_api.http`](./test_api.http) contiene 25 casos de prueba listos para ser ejecutados desde Visual Studio Code con la extensión *REST Client* (armonizados con los datos precargados del seed):
+1. **CRUD Categorías:** consultas de categorías iniciales, altas de nuevas categorías, modificaciones, bajas y validación de conflicto de nombres (409 Conflict).
+2. **CRUD Productos:** catálogo inicial de 10 productos, altas, modificaciones, bajas y validación de conflicto por duplicado (409 Conflict).
+3. **Relación N:N (`Producto_Categoria`):** consulta de categorías anidadas, asociación de productos a múltiples categorías en la tabla intermedia, validación de conflicto si la relación ya existe (409 Conflict), validación de entidades inexistentes (404 Not Found) y desasociación con validación de retorno al estado original.

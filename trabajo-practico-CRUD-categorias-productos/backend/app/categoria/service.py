@@ -2,26 +2,45 @@ from typing import List
 from fastapi import HTTPException, status
 from sqlalchemy import func
 from sqlmodel import Session, select
-from app.categoria.model import Categoria, ProductoCategoria
+from app.categoria.model import Categoria
 from app.categoria.schema import CategoriaCreate, CategoriaUpdate
 
 
 def crear_categoria(session: Session, data: CategoriaCreate) -> Categoria:
-    """Crea una nueva categoría validando que el nombre no esté duplicado."""
     nombre_normalizado = data.nombre.strip()
-    existente = session.exec(
-        select(Categoria).where(func.lower(Categoria.nombre) == func.lower(nombre_normalizado))
+    activa = session.exec(
+        select(Categoria).where(
+            func.lower(Categoria.nombre) == func.lower(nombre_normalizado),
+            Categoria.activo == True
+        )
     ).first()
 
-    if existente:
+    if activa:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=f"Ya existe una categoría registrada con el nombre '{nombre_normalizado}'."
         )
 
+    # Si existía previamente dada de baja (soft deleted), se reactiva
+    inactiva = session.exec(
+        select(Categoria).where(
+            func.lower(Categoria.nombre) == func.lower(nombre_normalizado),
+            Categoria.activo == False
+        )
+    ).first()
+
+    if inactiva:
+        inactiva.activo = True
+        inactiva.descripcion = data.descripcion.strip() if data.descripcion else None
+        session.add(inactiva)
+        session.commit()
+        session.refresh(inactiva)
+        return inactiva
+
     nueva_categoria = Categoria(
         nombre=nombre_normalizado,
-        descripcion=data.descripcion.strip() if data.descripcion else None
+        descripcion=data.descripcion.strip() if data.descripcion else None,
+        activo=True
     )
 
     session.add(nueva_categoria)
@@ -31,15 +50,13 @@ def crear_categoria(session: Session, data: CategoriaCreate) -> Categoria:
 
 
 def obtener_todas(session: Session) -> List[Categoria]:
-    """Retorna todas las categorías ordenadas por id."""
-    query = select(Categoria).order_by(Categoria.id)
+    query = select(Categoria).where(Categoria.activo == True).order_by(Categoria.id)
     return list(session.exec(query).all())
 
 
 def obtener_por_id(session: Session, id: int) -> Categoria:
-    """Retorna una categoría por su ID único. Lanza 404 si no existe."""
     categoria = session.get(Categoria, id)
-    if not categoria:
+    if not categoria or not categoria.activo:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Categoría con id {id} no encontrada."
@@ -48,7 +65,6 @@ def obtener_por_id(session: Session, id: int) -> Categoria:
 
 
 def actualizar_categoria(session: Session, id: int, data: CategoriaUpdate) -> Categoria:
-    """Actualiza una categoría existente verificando que no se repita el nombre."""
     categoria = obtener_por_id(session, id)
 
     datos = data.model_dump(exclude_unset=True)
@@ -58,7 +74,8 @@ def actualizar_categoria(session: Session, id: int, data: CategoriaUpdate) -> Ca
         existente = session.exec(
             select(Categoria).where(
                 func.lower(Categoria.nombre) == func.lower(nuevo_nombre),
-                Categoria.id != id
+                Categoria.id != id,
+                Categoria.activo == True
             )
         ).first()
 
@@ -80,16 +97,8 @@ def actualizar_categoria(session: Session, id: int, data: CategoriaUpdate) -> Ca
 
 
 def eliminar_categoria(session: Session, id: int) -> dict:
-    """Elimina una categoría y sus enlaces en la tabla intermedia."""
     categoria = obtener_por_id(session, id)
-
-    # Limpiar posibles asociaciones en producto_categoria
-    enlaces = session.exec(
-        select(ProductoCategoria).where(ProductoCategoria.categoria_id == id)
-    ).all()
-    for enlace in enlaces:
-        session.delete(enlace)
-
-    session.delete(categoria)
+    categoria.activo = False
+    session.add(categoria)
     session.commit()
-    return {"message": f"Categoría con id {id} eliminada correctamente."}
+    return {"message": f"Categoría con id {id} eliminada correctamente (soft delete)."}

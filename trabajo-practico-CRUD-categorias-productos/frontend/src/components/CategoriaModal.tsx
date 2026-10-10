@@ -19,7 +19,6 @@ export function CategoriaModal({
   const [errorValidacion, setErrorValidacion] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
 
-  // Sincronizar datos cada vez que se abre el modal o cambia la categoría seleccionada
   useEffect(() => {
     if (categoriaParaEditar) {
       setNombre(categoriaParaEditar.nombre);
@@ -65,14 +64,12 @@ export function CategoriaModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Fondo oscurecido (Backdrop) */}
       <div
         className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Contenido del Modal */}
       <div className="relative bg-white rounded-2xl shadow-xl border border-slate-200 max-w-md w-full p-6 overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <h2 className="text-lg font-bold text-slate-900">

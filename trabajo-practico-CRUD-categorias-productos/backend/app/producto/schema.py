@@ -28,6 +28,7 @@ class ProductoUpdate(BaseModel):
     precio_base: Optional[float] = Field(default=None, ge=0.0)
     imagen_url: Optional[str] = None
     disponible: Optional[bool] = None
+    activo: Optional[bool] = None
 
     @field_validator("nombre")
     @classmethod
@@ -39,6 +40,7 @@ class ProductoUpdate(BaseModel):
 
 class ProductoRead(ProductoBase):
     id: int
+    activo: bool = True
 
     model_config = ConfigDict(from_attributes=True)
 

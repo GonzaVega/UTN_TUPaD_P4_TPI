@@ -21,6 +21,7 @@ class CategoriaCreate(CategoriaBase):
 class CategoriaUpdate(BaseModel):
     nombre: Optional[str] = Field(default=None, min_length=1)
     descripcion: Optional[str] = None
+    activo: Optional[bool] = None
 
     @field_validator("nombre")
     @classmethod
@@ -32,5 +33,6 @@ class CategoriaUpdate(BaseModel):
 
 class CategoriaRead(CategoriaBase):
     id: int
+    activo: bool = True
 
     model_config = ConfigDict(from_attributes=True)

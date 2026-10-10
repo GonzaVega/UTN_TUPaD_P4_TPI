@@ -46,8 +46,7 @@ def obtener_producto(
     session: SessionDep,
     id: int = Path(..., gt=0, description="Identificador único del producto")
 ):
-    producto = service.obtener_por_id(session, id)
-    return producto
+    return service.obtener_por_id_con_categorias(session, id)
 
 
 @router.put(
@@ -77,10 +76,6 @@ def eliminar_producto(
 ):
     return service.eliminar_producto(session, id)
 
-
-# =========================================================
-# ENDPOINTS RELACIONALES N:N (Producto - Categoría)
-# =========================================================
 
 @router.post(
     "/{id}/categorias/{categoria_id}",

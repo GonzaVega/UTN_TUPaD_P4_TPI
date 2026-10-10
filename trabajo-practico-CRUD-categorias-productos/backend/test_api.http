@@ -3,6 +3,9 @@
 ### ====================================================================
 ### PRUEBAS DE LA API - TRABAJO PRÁCTICO 6 (FastAPI + SQLModel)
 ### CRUD Categorías + CRUD Productos + Relación N:N (ProductoCategoria)
+### NOTA: La base de datos incluye un SEED automático en la primera carga:
+###       - 3 Categorías: Pizzas (ID: 1), Hamburguesas (ID: 2), Bebidas (ID: 3)
+###       - 10 Productos: IDs del 1 al 10 asociados a sus categorías
 ### ====================================================================
 
 ### 1. Root / Estado del Servidor
@@ -13,136 +16,99 @@ Accept: application/json
 ### SECCIÓN A: CRUD DE CATEGORÍAS
 ### ====================================================================
 
-### 2. Crear Categoría 1 (Pizzas)
-POST {{baseUrl}}/categorias/
-Content-Type: application/json
+### 2. Listar Categorías Iniciales del Seed (GET 200 - Retorna las 3 categorías)
+GET {{baseUrl}}/categorias/
+Accept: application/json
 
-{
-  "nombre": "Pizzas",
-  "descripcion": "Pizzas artesanales con masa fresca y fermentación lenta"
-}
+### 3. Obtener Detalle de Categoría por ID (GET 200 - Categoría 1: Pizzas)
+GET {{baseUrl}}/categorias/1
+Accept: application/json
 
-### 3. Crear Categoría 2 (Hamburguesas)
-POST {{baseUrl}}/categorias/
-Content-Type: application/json
+### 4. Categoría Inexistente (GET 404 Not Found)
+GET {{baseUrl}}/categorias/999
+Accept: application/json
 
-{
-  "nombre": "Hamburguesas",
-  "descripcion": "Hamburguesas gourmet con ingredientes seleccionados"
-}
-
-### 4. Crear Categoría 3 (Bebidas)
-POST {{baseUrl}}/categorias/
-Content-Type: application/json
-
-{
-  "nombre": "Bebidas",
-  "descripcion": "Gaseosas, jugos naturales y cervezas artesanales"
-}
-
-### 5. Crear Categoría 4 (Postres)
+### 5. Crear Nueva Categoría: Postres (POST 201 Created)
 POST {{baseUrl}}/categorias/
 Content-Type: application/json
 
 {
   "nombre": "Postres",
-  "descripcion": "Helados, tortas y postres caseros"
+  "descripcion": "Helados artesanales, tortas y postres caseros de la casa"
 }
 
-### 6. Validación de Negocio: Nombre Duplicado en Categoría (POST 409 Conflict)
+### 6. Crear Otra Nueva Categoría: Pastas (POST 201 Created)
+POST {{baseUrl}}/categorias/
+Content-Type: application/json
+
+{
+  "nombre": "Pastas",
+  "descripcion": "Pastas frescas rellenas y salsas caseras italianas"
+}
+
+### 7. Validación de Negocio: Nombre Duplicado en Categoría existente del Seed (POST 409 Conflict)
 POST {{baseUrl}}/categorias/
 Content-Type: application/json
 
 {
   "nombre": "Pizzas",
-  "descripcion": "Intento de duplicar categoría existente"
+  "descripcion": "Intento de duplicar categoría ya existente en el seed inicial"
 }
 
-### 7. Listar Todas las Categorías (GET 200)
-GET {{baseUrl}}/categorias/
-Accept: application/json
-
-### 8. Obtener Detalle de Categoría por ID (GET 200)
-GET {{baseUrl}}/categorias/1
-Accept: application/json
-
-### 9. Categoría Inexistente (GET 404 Not Found)
-GET {{baseUrl}}/categorias/999
-Accept: application/json
-
-### 10. Actualizar Categoría (PUT 200)
-PUT {{baseUrl}}/categorias/1
+### 8. Actualizar Categoría Creada (PUT 200)
+PUT {{baseUrl}}/categorias/4
 Content-Type: application/json
 
 {
-  "nombre": "Pizzas & Calzones",
-  "descripcion": "Pizzas artesanales a la piedra y calzones rellenos"
+  "nombre": "Postres & Cafetería",
+  "descripcion": "Helados, tortas caseras, café de especialidad e infusiones"
 }
 
-### 11. Eliminar Categoría (DELETE 200)
-DELETE {{baseUrl}}/categorias/4
+### 9. Eliminar Categoría Creada (DELETE 200 - Soft Delete)
+# Realiza borrado lógico marcando 'activo = false'. El registro persiste en BD pero no se lista en GET ni rompe integridad referencial.
+DELETE {{baseUrl}}/categorias/5
 Accept: application/json
 
 ### ====================================================================
 ### SECCIÓN B: CRUD DE PRODUCTOS
 ### ====================================================================
 
-### 12. Crear Producto 1 (Pizza Margherita)
+### 10. Listar Todos los Productos del Seed Inicial (GET 200 - Retorna 10 productos)
+GET {{baseUrl}}/productos/
+Accept: application/json
+
+### 11. Obtener Producto por ID (GET 200 - Producto 1: Pizza Margherita con categoría anidada)
+GET {{baseUrl}}/productos/1
+Accept: application/json
+
+### 12. Producto Inexistente (GET 404 Not Found)
+GET {{baseUrl}}/productos/999
+Accept: application/json
+
+### 13. Crear Nuevo Producto (POST 201 Created)
+POST {{baseUrl}}/productos/
+Content-Type: application/json
+
+{
+  "nombre": "Tiramisú Tradicional",
+  "descripcion": "Bizcochos savoiardi embebidos en café expreso con crema de mascarpone y cacao amargo",
+  "precio_base": 7.50,
+  "imagen_url": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9",
+  "disponible": true
+}
+
+### 14. Validación de Negocio: Producto Duplicado existente en Seed (POST 409 Conflict)
 POST {{baseUrl}}/productos/
 Content-Type: application/json
 
 {
   "nombre": "Pizza Margherita",
-  "descripcion": "Salsa de tomate, mozzarella fior di latte y albahaca fresca",
-  "precio_base": 12.50,
-  "imagen_url": "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3",
-  "disponible": true
-}
-
-### 13. Crear Producto 2 (Hamburguesa Doble Cheddar)
-POST {{baseUrl}}/productos/
-Content-Type: application/json
-
-{
-  "nombre": "Hamburguesa Doble Cheddar",
-  "descripcion": "Doble medallón de carne 120g con queso cheddar y panceta crocante",
-  "precio_base": 14.00,
-  "imagen_url": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd",
-  "disponible": true
-}
-
-### 14. Crear Producto 3 (Limonada con Menta y Jengibre)
-POST {{baseUrl}}/productos/
-Content-Type: application/json
-
-{
-  "nombre": "Limonada Menta y Jengibre",
-  "descripcion": "Bebida refrescante 500ml elaborada en el día",
-  "precio_base": 4.50,
-  "imagen_url": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd",
-  "disponible": true
-}
-
-### 15. Validación de Negocio: Producto Duplicado (POST 409 Conflict)
-POST {{baseUrl}}/productos/
-Content-Type: application/json
-
-{
-  "nombre": "Pizza Margherita",
-  "descripcion": "Intento de duplicar producto existente",
+  "descripcion": "Intento de duplicar producto ya existente en el catálogo",
   "precio_base": 10.00,
   "disponible": true
 }
 
-### 16. Listar Todos los Productos (GET 200)
-GET {{baseUrl}}/productos/
-Accept: application/json
-
-### 17. Obtener Producto por ID (GET 200)
-GET {{baseUrl}}/productos/1
-Accept: application/json
-
-### 18. Actualizar Producto (PUT 200)
+### 15. Actualizar Producto (PUT 200)
 PUT {{baseUrl}}/productos/1
 Content-Type: application/json
 
@@ -151,55 +117,53 @@ Content-Type: application/json
   "disponible": true
 }
 
+### 16. Eliminar Producto Creado (DELETE 200 - Soft Delete)
+# Realiza borrado lógico marcando 'activo = false'. El producto persiste en BD pero no se lista en GET ni rompe integridad referencial.
+DELETE {{baseUrl}}/productos/11
+Accept: application/json
+
 ### ====================================================================
 ### SECCIÓN C: GESTIÓN DE RELACIÓN MUCHOS A MUCHOS (N:N)
 ### Endpoints de Producto_Categoria en la tabla intermedia
 ### ====================================================================
 
-### 19. Asociar Producto 1 a Categoría 1 (Pizza Margherita -> Pizzas & Calzones)
-POST {{baseUrl}}/productos/1/categorias/1
-Accept: application/json
-
-### 20. Asociar Producto 2 a Categoría 2 (Hamburguesa -> Hamburguesas)
-POST {{baseUrl}}/productos/2/categorias/2
-Accept: application/json
-
-### 21. Asociar Producto 3 a Categoría 3 (Limonada -> Bebidas)
-POST {{baseUrl}}/productos/3/categorias/3
-Accept: application/json
-
-### 22. Caso N:N: Asociar Producto 1 a una Segunda Categoría (Pizza Margherita -> Bebidas o Menú Especial)
-# Demuestra que un producto puede tener múltiples categorías
-POST {{baseUrl}}/productos/1/categorias/2
-Accept: application/json
-
-### 23. Validación de Relación: Asociación Ya Existente (POST 409 Conflict)
-# Según el apunte N:N: si la relación ya existía, debe devolver 409 Conflict
-POST {{baseUrl}}/productos/1/categorias/1
-Accept: application/json
-
-### 24. Validación de Relación: Producto Inexistente (POST 404 Not Found)
-POST {{baseUrl}}/productos/999/categorias/1
-Accept: application/json
-
-### 25. Validación de Relación: Categoría Inexistente (POST 404 Not Found)
-POST {{baseUrl}}/productos/1/categorias/999
-Accept: application/json
-
-### 26. Listar Categorías de un Producto (GET 200)
-# Retorna las categorías asociadas al Producto 1
+### 17. Listar Categorías de un Producto del Seed (GET 200)
+# Retorna la categoría 'Pizzas' asociada al Producto 1 (Pizza Margherita)
 GET {{baseUrl}}/productos/1/categorias
 Accept: application/json
 
-### 27. Detalle de Producto con Categorías Anidadas (GET 200)
-# Retorna el producto 1 con la lista de sus categorías
+### 18. Detalle de Producto con Categorías Anidadas (GET 200)
+# Retorna el Producto 1 con la lista de sus categorías relacionadas
 GET {{baseUrl}}/productos/1
 Accept: application/json
 
-### 28. Desasociar Producto de una Categoría (DELETE 200)
+### 19. Asociar Producto a una Segunda Categoría (Demostración N:N - POST 200)
+# Asociar Producto 1 (Pizza Margherita) a Categoría 2 (Hamburguesas / Menú Promocional)
+POST {{baseUrl}}/productos/1/categorias/2
+Accept: application/json
+
+### 20. Verificar N:N: Listar Categorías del Producto 1 (GET 200 - Ahora tiene 2 categorías)
+GET {{baseUrl}}/productos/1/categorias
+Accept: application/json
+
+### 21. Validación de Relación: Asociación Ya Existente (POST 409 Conflict)
+# Según el apunte didáctico N:N: si la relación ya existía, debe devolver 409 Conflict
+POST {{baseUrl}}/productos/1/categorias/2
+Accept: application/json
+
+### 22. Validación de Relación: Producto Inexistente (POST 404 Not Found)
+POST {{baseUrl}}/productos/999/categorias/1
+Accept: application/json
+
+### 23. Validación de Relación: Categoría Inexistente (POST 404 Not Found)
+POST {{baseUrl}}/productos/1/categorias/999
+Accept: application/json
+
+### 24. Desasociar Producto de una Categoría (DELETE 200)
+# Desasociar Producto 1 de la Categoría 2 restaurando su estado inicial
 DELETE {{baseUrl}}/productos/1/categorias/2
 Accept: application/json
 
-### 29. Verificar Desasociación: Listar Categorías del Producto 1 Nuevamente
+### 25. Verificar Desasociación: Listar Categorías del Producto 1 Nuevamente (GET 200 - Vuelve a tener 1 categoría)
 GET {{baseUrl}}/productos/1/categorias
 Accept: application/json

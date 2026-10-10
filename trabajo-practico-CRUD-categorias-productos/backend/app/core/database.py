@@ -8,7 +8,6 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./tp6.db")
 
-# Si se usa SQLite, se requiere el argumento check_same_thread: False para FastAPI
 connect_args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
 
 engine = create_engine(
@@ -19,12 +18,16 @@ engine = create_engine(
 
 
 def init_db() -> None:
-    """Crea todas las tablas definidas en los modelos SQLModel."""
+    import app.categoria.model 
+    import app.producto.model  
+
     SQLModel.metadata.create_all(engine)
+    from app.core.seed import seed_database
+    with Session(engine) as session:
+        seed_database(session)
 
 
 def get_session() -> Generator[Session, None, None]:
-    """Generador de sesión de base de datos para inyección de dependencias."""
     with Session(engine) as session:
         yield session
 
