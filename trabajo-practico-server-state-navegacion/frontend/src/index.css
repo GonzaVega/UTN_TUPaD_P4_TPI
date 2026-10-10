@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+html {
+  /* Evita el desplazamiento horizontal (layout shift) de la UI y de la Navbar */
+  /* cuando una página requiere scroll vertical y la otra no. */
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
