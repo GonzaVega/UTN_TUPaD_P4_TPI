@@ -3,11 +3,6 @@ import { Navbar } from "./components/Navbar";
 import { CategoriasPage } from "./pages/CategoriasPage";
 import { ProductsPage } from "./pages/ProductsPage";
 
-/**
- * Componente principal App.
- * Siguiendo las directivas del TP7, ya no contiene lógica de negocio ni estado de la API.
- * Su única responsabilidad es renderizar el Navbar y definir las rutas de la aplicación.
- */
 export function App() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">

@@ -21,7 +21,6 @@ def crear_categoria(session: Session, data: CategoriaCreate) -> Categoria:
             detail=f"Ya existe una categoría registrada con el nombre '{nombre_normalizado}'."
         )
 
-    # Si existía previamente dada de baja (soft deleted), se reactiva
     inactiva = session.exec(
         select(Categoria).where(
             func.lower(Categoria.nombre) == func.lower(nombre_normalizado),

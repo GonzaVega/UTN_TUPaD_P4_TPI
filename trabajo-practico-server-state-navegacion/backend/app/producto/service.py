@@ -22,7 +22,6 @@ def crear_producto(session: Session, data: ProductoCreate) -> Producto:
             detail=f"Ya existe un producto registrado con el nombre '{nombre_normalizado}'."
         )
 
-    # Si existía previamente dado de baja (soft deleted), se reactiva
     inactivo = session.exec(
         select(Producto).where(
             func.lower(Producto.nombre) == func.lower(nombre_normalizado),

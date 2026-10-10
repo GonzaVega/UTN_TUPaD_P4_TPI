@@ -53,7 +53,6 @@ export function Navbar() {
           </NavLink>
         </nav>
 
-        {/* Enlace Externo Swagger */}
         <div className="hidden sm:flex items-center space-x-3 text-sm">
           <a
             href="http://localhost:8000/docs"

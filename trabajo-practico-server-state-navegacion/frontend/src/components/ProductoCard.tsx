@@ -7,7 +7,6 @@ export interface ProductoCardProps {
 export function ProductoCard({ producto }: ProductoCardProps) {
   return (
     <article className="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden flex flex-col hover:shadow-md transition-shadow">
-      {/* Imagen del Producto */}
       <div className="relative h-48 w-full bg-slate-100 overflow-hidden">
         {producto.imagen_url ? (
           <img
@@ -35,10 +34,8 @@ export function ProductoCard({ producto }: ProductoCardProps) {
         </div>
       </div>
 
-      {/* Contenido */}
       <div className="p-5 flex-1 flex flex-col justify-between">
         <div>
-          {/* Categorías vinculadas (Relación N:N) */}
           {producto.categorias && producto.categorias.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mb-2.5">
               {producto.categorias.map((cat) => (
@@ -58,12 +55,13 @@ export function ProductoCard({ producto }: ProductoCardProps) {
 
           <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
             {producto.descripcion || (
-              <span className="italic text-slate-400">Sin descripción disponible</span>
+              <span className="italic text-slate-400">
+                Sin descripción disponible
+              </span>
             )}
           </p>
         </div>
 
-        {/* Precio */}
         <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
           <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
             Precio

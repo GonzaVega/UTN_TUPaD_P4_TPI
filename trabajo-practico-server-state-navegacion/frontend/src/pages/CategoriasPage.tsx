@@ -13,11 +13,11 @@ import { CategoriaModal } from "../components/CategoriaModal";
 export function CategoriasPage() {
   const queryClient = useQueryClient();
 
-  // Estados locales para el control del Modal (Client State)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedCategoria, setSelectedCategoria] = useState<Categoria | null>(null);
+  const [selectedCategoria, setSelectedCategoria] = useState<Categoria | null>(
+    null,
+  );
 
-  // 1. Lectura del Server State con useQuery
   const {
     data: categorias = [],
     isLoading,
@@ -29,7 +29,6 @@ export function CategoriasPage() {
     queryFn: getCategorias,
   });
 
-  // 2. Mutación para Crear Categoría con invalidación de caché
   const createMutation = useMutation({
     mutationFn: createCategoria,
     onSuccess: () => {
@@ -37,7 +36,6 @@ export function CategoriasPage() {
     },
   });
 
-  // 3. Mutación para Actualizar Categoría con invalidación de caché
   const updateMutation = useMutation({
     mutationFn: updateCategoria,
     onSuccess: () => {
@@ -45,7 +43,6 @@ export function CategoriasPage() {
     },
   });
 
-  // 4. Mutación para Eliminar Categoría con invalidación de caché
   const deleteMutation = useMutation({
     mutationFn: deleteCategoria,
     onSuccess: () => {
@@ -53,12 +50,11 @@ export function CategoriasPage() {
     },
     onError: (err: unknown) => {
       alert(
-        err instanceof Error ? err.message : "Error al eliminar la categoría."
+        err instanceof Error ? err.message : "Error al eliminar la categoría.",
       );
     },
   });
 
-  // Manejadores para abrir y cerrar el Modal
   const handleOpenCreateModal = () => {
     setSelectedCategoria(null);
     setIsModalOpen(true);
@@ -74,7 +70,6 @@ export function CategoriasPage() {
     setSelectedCategoria(null);
   };
 
-  // Envío del formulario (Creación o Edición)
   const handleModalSubmit = async (formData: CategoriaFormData) => {
     if (selectedCategoria) {
       await updateMutation.mutateAsync({
@@ -86,10 +81,9 @@ export function CategoriasPage() {
     }
   };
 
-  // Confirmación y disparo de eliminación
   const handleDelete = (id: number) => {
     const confirmacion = window.confirm(
-      "¿Estás seguro de que deseas eliminar esta categoría?"
+      "¿Estás seguro de que deseas eliminar esta categoría?",
     );
     if (!confirmacion) return;
     deleteMutation.mutate(id);
@@ -104,7 +98,8 @@ export function CategoriasPage() {
             Categorías
           </h2>
           <p className="text-sm text-slate-500 mt-1">
-            Administración del catálogo sincronizada con el backend mediante TanStack Query.
+            Administración del catálogo sincronizada con el backend mediante
+            TanStack Query.
           </p>
         </div>
 
@@ -118,13 +113,14 @@ export function CategoriasPage() {
         </button>
       </div>
 
-      {/* Alerta de Error en useQuery */}
       {isError && (
         <div className="mb-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <span className="text-xl">⚠️</span>
             <div>
-              <p className="font-semibold text-sm">Error al cargar categorías:</p>
+              <p className="font-semibold text-sm">
+                Error al cargar categorías:
+              </p>
               <p className="text-xs text-amber-700">
                 {error instanceof Error ? error.message : "Error desconocido"}
               </p>
@@ -147,7 +143,6 @@ export function CategoriasPage() {
         </div>
       )}
 
-      {/* Estado de Carga */}
       {isLoading ? (
         <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-12 text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-600 border-t-transparent mb-3" />
@@ -163,7 +158,6 @@ export function CategoriasPage() {
         />
       )}
 
-      {/* Modal de Alta y Edición */}
       <CategoriaModal
         isOpen={isModalOpen}
         categoriaParaEditar={selectedCategoria}

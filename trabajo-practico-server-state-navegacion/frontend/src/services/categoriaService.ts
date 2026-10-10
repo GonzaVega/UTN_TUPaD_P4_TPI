@@ -2,15 +2,12 @@ import type { Categoria, CategoriaFormData } from "../types/categoria";
 
 const API_BASE_URL = "http://localhost:8000";
 
-/**
- * Servicio para consumir la API REST de Categorías mediante fetch.
- * Arroja excepciones explícitas para que TanStack Query gestione automáticamente los estados de error.
- */
-
 export const getCategorias = async (): Promise<Categoria[]> => {
   const res = await fetch(`${API_BASE_URL}/categorias/`);
   if (!res.ok) {
-    throw new Error(`Error ${res.status}: No se pudo cargar el listado de categorías.`);
+    throw new Error(
+      `Error ${res.status}: No se pudo cargar el listado de categorías.`,
+    );
   }
   return res.json();
 };
@@ -18,12 +15,16 @@ export const getCategorias = async (): Promise<Categoria[]> => {
 export const getCategoriaById = async (id: number): Promise<Categoria> => {
   const res = await fetch(`${API_BASE_URL}/categorias/${id}`);
   if (!res.ok) {
-    throw new Error(`Error ${res.status}: No se pudo obtener la categoría con ID ${id}.`);
+    throw new Error(
+      `Error ${res.status}: No se pudo obtener la categoría con ID ${id}.`,
+    );
   }
   return res.json();
 };
 
-export const createCategoria = async (data: CategoriaFormData): Promise<Categoria> => {
+export const createCategoria = async (
+  data: CategoriaFormData,
+): Promise<Categoria> => {
   const res = await fetch(`${API_BASE_URL}/categorias/`, {
     method: "POST",
     headers: {
