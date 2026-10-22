@@ -1,0 +1,162 @@
+@baseUrl = http://127.0.0.1:8000
+
+### ====================================================================
+### PRUEBAS DE LA API - TRABAJO PRÁCTICO 8: MÓDULO DE PEDIDOS
+### Arquitectura: Models-Schemas-Repository-UoW-Service-Router
+### Transacciones Atómicas con Unit of Work (Commit / Rollback)
+### ====================================================================
+
+### 1. Listar Pedidos Iniciales (GET 200 - Lista vacía o pedidos existentes)
+GET {{baseUrl}}/pedidos/
+Accept: application/json
+
+### --------------------------------------------------------------------
+### CASOS DE ÉXITO (CRUD COMPLETO DE PEDIDOS)
+### --------------------------------------------------------------------
+
+### 2. Crear Pedido Exitoso (POST 201 Created)
+# Se crea un pedido con 2 productos del seed:
+# - Producto 1 (Pizza Margherita: 12.50) x 2 = 25.00
+# - Producto 5 (Hamburguesa Clásica: 11.00) x 1 = 11.00
+# Total esperado: 36.00, Estado inicial: PENDIENTE
+POST {{baseUrl}}/pedidos/
+Content-Type: application/json
+
+{
+  "detalles": [
+    {
+      "producto_id": 1,
+      "cantidad": 2
+    },
+    {
+      "producto_id": 5,
+      "cantidad": 1
+    }
+  ]
+}
+
+### 3. Listar Todos los Pedidos (GET 200 OK - Debe mostrar el pedido creado)
+GET {{baseUrl}}/pedidos/
+Accept: application/json
+
+### 4. Obtener Detalle de Pedido por ID (GET 200 OK - Con lista de detalles)
+GET {{baseUrl}}/pedidos/1
+Accept: application/json
+
+### 5. Actualizar Estado del Pedido a CONFIRMADO (PUT 200 OK)
+PUT {{baseUrl}}/pedidos/1
+Content-Type: application/json
+
+{
+  "estado": "CONFIRMADO"
+}
+
+### 6. Actualizar Estado del Pedido a ENTREGADO (PUT 200 OK - Estado terminal)
+PUT {{baseUrl}}/pedidos/1
+Content-Type: application/json
+
+{
+  "estado": "ENTREGADO"
+}
+
+### 7. Eliminar Pedido Lógicamente (DELETE 204 No Content)
+# Marca deleted_at en el pedido mediante el Unit of Work. No borra físicamente.
+DELETE {{baseUrl}}/pedidos/1
+Accept: application/json
+
+### --------------------------------------------------------------------
+### CASOS DE ERROR: VALIDACIONES Y REGLAS DE NEGOCIO (422)
+### --------------------------------------------------------------------
+
+### 8. Error 422: Producto Duplicado en los Detalles (RN-12)
+# Un mismo pedido no puede tener dos detalles con el mismo producto_id.
+POST {{baseUrl}}/pedidos/
+Content-Type: application/json
+
+{
+  "detalles": [
+    {
+      "producto_id": 2,
+      "cantidad": 1
+    },
+    {
+      "producto_id": 2,
+      "cantidad": 3
+    }
+  ]
+}
+
+### 9. Error 422: Pedido sin Detalles / Lista Vacía (RN-12)
+# Un pedido debe contener al menos un DetallePedido.
+POST {{baseUrl}}/pedidos/
+Content-Type: application/json
+
+{
+  "detalles": []
+}
+
+### 10. Error 422: Cantidad Menor a 1 (RN-12)
+# La cantidad solicitada debe ser estrictamente >= 1.
+POST {{baseUrl}}/pedidos/
+Content-Type: application/json
+
+{
+  "detalles": [
+    {
+      "producto_id": 1,
+      "cantidad": 0
+    }
+  ]
+}
+
+### 11. Error 422: Estado Inválido en Actualización
+# El estado debe ser uno de: PENDIENTE, CONFIRMADO, ENTREGADO o CANCELADO.
+PUT {{baseUrl}}/pedidos/1
+Content-Type: application/json
+
+{
+  "estado": "EN_CAMINO_NO_PERMITIDO"
+}
+
+### --------------------------------------------------------------------
+### CASOS DE ERROR: RECURSO NO ENCONTRADO (404)
+### --------------------------------------------------------------------
+
+### 12. Error 404: Detalle Referencia Producto Inexistente (Rollback Atómico)
+# Si un producto no existe, se rechaza la operación completa (404) sin guardar nada.
+POST {{baseUrl}}/pedidos/
+Content-Type: application/json
+
+{
+  "detalles": [
+    {
+      "producto_id": 1,
+      "cantidad": 1
+    },
+    {
+      "producto_id": 99999,
+      "cantidad": 2
+    }
+  ]
+}
+
+### 13. Error 404: Consultar Pedido Inexistente
+GET {{baseUrl}}/pedidos/99999
+Accept: application/json
+
+### 14. Error 404: Operar Sobre Pedido Eliminado (RN-13)
+# El Pedido 1 fue eliminado con soft-delete en el paso 7, por lo que debe responder 404.
+GET {{baseUrl}}/pedidos/1
+Accept: application/json
+
+### 15. Error 404: Intentar Actualizar Pedido Eliminado
+PUT {{baseUrl}}/pedidos/1
+Content-Type: application/json
+
+{
+  "estado": "CONFIRMADO"
+}
+
+### 16. Error 404: Intentar Eliminar Nuevamente un Pedido ya Eliminado
+DELETE {{baseUrl}}/pedidos/1
+Accept: application/json
