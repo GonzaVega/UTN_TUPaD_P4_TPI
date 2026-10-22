@@ -4,13 +4,21 @@
 # Junk del sistema
 .DS_Store
 
-# IDE a nivel raíz
+# IDEs
 .idea/
 .vscode/
+**/.idea/
+**/.vscode/
 .settings/
 .classpath
 .project
 out/
+
+# Gestores de paquetes y dependencias
+.pnpm-store/
+**/.pnpm-store/
+node_modules/
+**/node_modules/
 
 # Compilación / build
 build/
