@@ -1,0 +1,62 @@
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from app.core.config import settings
+from app.core.database import create_all_tables
+from app.modules.auth.router import router as auth_router
+from app.modules.categorias.router import router as categoria_router
+from app.modules.pedidos.router import router as pedido_router
+from app.modules.productos.router import router as producto_router
+from app.modules.usuarios.router import router as usuario_router
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Creación automática de tablas si no existen
+    create_all_tables()
+    yield
+
+
+def create_app() -> FastAPI:
+    app = FastAPI(
+        title="Food Store API",
+        description="Sistema de pedidos de comida - Trabajo Práctico Integrador Final (UTN Programación IV)",
+        version="1.0.0",
+        lifespan=lifespan,
+    )
+
+    # Configuración de CORS con credenciales para el frontend
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[
+            settings.FRONTEND_ORIGIN,
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+        ],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    # Registro de routers bajo el prefijo global /api/v1
+    api_prefix = "/api/v1"
+    app.include_router(auth_router, prefix=api_prefix)
+    app.include_router(usuario_router, prefix=api_prefix)
+    app.include_router(categoria_router, prefix=api_prefix)
+    app.include_router(producto_router, prefix=api_prefix)
+    app.include_router(pedido_router, prefix=api_prefix)
+
+    @app.get("/", tags=["Root"])
+    def root():
+        return {
+            "mensaje": "Bienvenido a Food Store API",
+            "documentacion": "/docs",
+            "redoc": "/redoc",
+            "version": "1.0.0",
+        }
+
+    return app
+
+
+app = create_app()
+
