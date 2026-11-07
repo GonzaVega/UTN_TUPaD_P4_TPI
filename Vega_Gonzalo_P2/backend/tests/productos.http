@@ -1,0 +1,230 @@
+@baseUrl = http://localhost:8000/api/v1
+
+### ====================================================================
+### PRUEBAS DE LA API - SEGUNDA EVALUACIÓN PARCIAL (FastAPI + SQLModel)
+### Módulo Productos: CRUD, stock, validaciones (RN-01 a RN-13) y filtros
+### ====================================================================
+
+### 1. Listar catálogo de unidades de medida (GET 200 - Seed inicial de 6 unidades)
+GET {{baseUrl}}/unidades-medida
+Accept: application/json
+
+### ====================================================================
+### SECCIÓN A: ALTA DE PRODUCTOS Y VALIDACIONES (201, 404, 409, 422)
+### ====================================================================
+
+### 2. Crear producto exitoso con unidad de peso (kg, admite decimales en stock)
+# @name crearProducto1
+POST {{baseUrl}}/productos
+Content-Type: application/json
+
+{
+  "nombre": "Milanesa de Ternera",
+  "descripcion": "Milanesa de carne vacuna tiernizada por kilogramo",
+  "precio_base": 8500.50,
+  "unidad_venta_id": 1,
+  "stock_cantidad": 15.5,
+  "disponible": true
+}
+
+###
+
+@prod1Id = {{crearProducto1.response.body.id}}
+
+### 3. Crear producto exitoso con unidad contable (docena, requiere stock entero)
+# @name crearProducto2
+POST {{baseUrl}}/productos
+Content-Type: application/json
+
+{
+  "nombre": "Empanadas Salteñas",
+  "descripcion": "Docena de empanadas de carne cortada a cuchillo",
+  "precio_base": 12000.00,
+  "unidad_venta_id": 6,
+  "stock_cantidad": 10,
+  "disponible": true
+}
+
+### 4. ERROR 422 (RN-01): Validar nombre corto (< 3 caracteres)
+POST {{baseUrl}}/productos
+Content-Type: application/json
+
+{
+  "nombre": "Em",
+  "precio_base": 1000.0,
+  "unidad_venta_id": 1,
+  "stock_cantidad": 5
+}
+
+### 5. ERROR 422 (RN-01): Validar precio_base negativo
+POST {{baseUrl}}/productos
+Content-Type: application/json
+
+{
+  "nombre": "Pizza Especial",
+  "precio_base": -500.0,
+  "unidad_venta_id": 5,
+  "stock_cantidad": 5
+}
+
+### 6. ERROR 422 (RN-01): Validar stock_cantidad negativo
+POST {{baseUrl}}/productos
+Content-Type: application/json
+
+{
+  "nombre": "Pizza Especial",
+  "precio_base": 5000.0,
+  "unidad_venta_id": 5,
+  "stock_cantidad": -2
+}
+
+### 7. ERROR 422 (RN-10): Stock con decimales sobre unidad contable (id=5, pieza/u)
+POST {{baseUrl}}/productos
+Content-Type: application/json
+
+{
+  "nombre": "Tarta de Jamón y Queso",
+  "precio_base": 6500.0,
+  "unidad_venta_id": 5,
+  "stock_cantidad": 2.5
+}
+
+### 8. ERROR 404 (RN-03): Unidad de medida inexistente (FK inválida)
+POST {{baseUrl}}/productos
+Content-Type: application/json
+
+{
+  "nombre": "Producto Unidad Inexistente",
+  "precio_base": 1500.0,
+  "unidad_venta_id": 9999,
+  "stock_cantidad": 10
+}
+
+### 9. ERROR 409 (RN-02): Nombre repetido entre productos activos
+POST {{baseUrl}}/productos
+Content-Type: application/json
+
+{
+  "nombre": "Milanesa de Ternera",
+  "precio_base": 9000.0,
+  "unidad_venta_id": 1,
+  "stock_cantidad": 5
+}
+
+### ====================================================================
+### SECCIÓN B: LISTADO, PAGINACIÓN Y LOS 4 FILTROS DE PRODUCTOS
+### ====================================================================
+
+### 10. Listar productos por defecto (paginación skip=0, limit=10, solo activos)
+GET {{baseUrl}}/productos?skip=0&limit=10
+Accept: application/json
+
+### 11. Filtro 1 — search: buscar coincidencia parcial en nombre (sin distinguir mayúsculas)
+GET {{baseUrl}}/productos?search=milanesa
+Accept: application/json
+
+### 12. Filtro 2 — disponible: filtrar por disponibilidad de venta
+GET {{baseUrl}}/productos?disponible=true
+Accept: application/json
+
+### 13. Filtro 3 — categoria_id: devolver solo productos clasificados en una categoría
+GET {{baseUrl}}/productos?categoria_id=1
+Accept: application/json
+
+### ====================================================================
+### SECCIÓN C: DETALLE, ACTUALIZACIÓN, HAY_STOCK Y BAJA LÓGICA
+### ====================================================================
+
+### 14. Obtener detalle de producto por ID (GET 200 - incluye unidad_venta, categorias y hay_stock)
+GET {{baseUrl}}/productos/{{prod1Id}}
+Accept: application/json
+
+### 15. ERROR 404 (RN-03): Obtener detalle con ID inexistente
+GET {{baseUrl}}/productos/99999
+Accept: application/json
+
+### 16. ERROR 422 (RN-10 en PUT): Intentar cambiar a unidad contable con stock decimal
+PUT {{baseUrl}}/productos/{{prod1Id}}
+Content-Type: application/json
+
+{
+  "nombre": "Milanesa de Ternera",
+  "descripcion": "Intento de pasar a unidad contable manteniendo stock 15.5",
+  "precio_base": 9200.00,
+  "unidad_venta_id": 5,
+  "stock_cantidad": 15.5,
+  "disponible": true
+}
+
+### 17. Actualizar producto exitoso (PUT 200) y verificar hay_stock = true antes de llevar stock a 0
+PUT {{baseUrl}}/productos/{{prod1Id}}
+Content-Type: application/json
+
+{
+  "nombre": "Milanesa de Ternera Especial",
+  "descripcion": "Milanesa de nalga fresca rebozada artesanalmente",
+  "precio_base": 9200.00,
+  "unidad_venta_id": 1,
+  "stock_cantidad": 15.5,
+  "disponible": true
+}
+
+### 18. Lectura de hay_stock ANTES de llevar el stock a 0 (hay_stock: true)
+GET {{baseUrl}}/productos/{{prod1Id}}
+Accept: application/json
+
+### 19. Actualizar producto llevando stock_cantidad a 0 (RN-11)
+PUT {{baseUrl}}/productos/{{prod1Id}}
+Content-Type: application/json
+
+{
+  "nombre": "Milanesa de Ternera Especial",
+  "descripcion": "Milanesa de nalga fresca rebozada artesanalmente",
+  "precio_base": 9200.00,
+  "unidad_venta_id": 1,
+  "stock_cantidad": 0,
+  "disponible": true
+}
+
+### 20. Lectura de hay_stock DESPUÉS de llevar el stock a 0 (hay_stock: false)
+GET {{baseUrl}}/productos/{{prod1Id}}
+Accept: application/json
+
+### 21. Anular producto (DELETE 204 No Content — Baja lógica: activo = false y anulado_at)
+DELETE {{baseUrl}}/productos/{{prod1Id}}
+
+### 22. Consultar producto anulado por su ID (GET 200 con activo = false y anulado_at)
+GET {{baseUrl}}/productos/{{prod1Id}}
+Accept: application/json
+
+### 23. Filtro 4 — activo=false: listar únicamente productos anulados
+GET {{baseUrl}}/productos?activo=false
+Accept: application/json
+
+### 24. ERROR 409 (RN-04): Intentar anular un producto que ya se encuentra anulado
+DELETE {{baseUrl}}/productos/{{prod1Id}}
+
+### 25. ERROR 409 (RN-05): Intentar modificar con PUT un producto anulado
+PUT {{baseUrl}}/productos/{{prod1Id}}
+Content-Type: application/json
+
+{
+  "nombre": "Milanesa de Ternera Modificada",
+  "precio_base": 9500.00,
+  "unidad_venta_id": 1,
+  "stock_cantidad": 10,
+  "disponible": true
+}
+
+### 26. Reutilizar nombre de producto anulado (RN-02: un registro anulado libera su nombre -> 201)
+POST {{baseUrl}}/productos
+Content-Type: application/json
+
+{
+  "nombre": "Milanesa de Ternera Especial",
+  "descripcion": "Nuevo lote de milanesas dado de alta tras liberación de nombre",
+  "precio_base": 9500.00,
+  "unidad_venta_id": 1,
+  "stock_cantidad": 20,
+  "disponible": true
+}

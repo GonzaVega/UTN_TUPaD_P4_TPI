@@ -1,0 +1,117 @@
+@baseUrl = http://localhost:8000/api/v1
+
+### ====================================================================
+### PRUEBAS DE LA API - SEGUNDA EVALUACIÓN PARCIAL (FastAPI + SQLModel)
+### Relaciones 1:N (UnidadMedida -> Producto) y N:N (Producto <-> Categoria)
+### ====================================================================
+
+### 1. Crear categoría 1: Pastas (POST 201)
+# @name crearCat1
+POST {{baseUrl}}/categorias
+Content-Type: application/json
+
+{
+  "nombre": "Pastas",
+  "descripcion": "Pastas frescas y caseras elaboradas en el día"
+}
+
+###
+
+@cat1Id = {{crearCat1.response.body.id}}
+
+### 2. Crear categoría 2: Especialidades (POST 201)
+# @name crearCat2
+POST {{baseUrl}}/categorias
+Content-Type: application/json
+
+{
+  "nombre": "Especialidades",
+  "descripcion": "Platos destacados y sugerencias de la casa"
+}
+
+###
+
+@cat2Id = {{crearCat2.response.body.id}}
+
+### 3. ERROR 409 (RN-02): Crear categoría con nombre repetido entre las activas
+POST {{baseUrl}}/categorias
+Content-Type: application/json
+
+{
+  "nombre": "Pastas",
+  "descripcion": "Intento de duplicar categoría activa"
+}
+
+### 4. Listar categorías activas y filtrar por búsqueda parcial
+GET {{baseUrl}}/categorias?activo=true&search=pas
+Accept: application/json
+
+### 5. Crear un producto para clasificar en categorías (POST 201)
+# @name crearProd
+POST {{baseUrl}}/productos
+Content-Type: application/json
+
+{
+  "nombre": "Sorrentinos de Jamón y Mozzarella",
+  "descripcion": "Caja de sorrentinos artesanales por unidad",
+  "precio_base": 5400.00,
+  "unidad_venta_id": 5,
+  "stock_cantidad": 12,
+  "disponible": true
+}
+
+###
+
+@prodId = {{crearProd.response.body.id}}
+
+### 6. Clasificar el producto en Categoría 1 marcándola como principal (es_principal = true -> 201)
+POST {{baseUrl}}/productos/{{prodId}}/categorias
+Content-Type: application/json
+
+{
+  "categoria_id": {{cat1Id}},
+  "es_principal": true
+}
+
+### 7. Clasificar el producto en Categoría 2 marcándola como nueva principal (RN-09 -> 201)
+# La Categoría 1 deja de ser principal automáticamente en la misma operación
+POST {{baseUrl}}/productos/{{prodId}}/categorias
+Content-Type: application/json
+
+{
+  "categoria_id": {{cat2Id}},
+  "es_principal": true
+}
+
+### 8. Verificar categorías del producto (RN-09: Categoría 1 en es_principal=false, Categoría 2 en es_principal=true)
+GET {{baseUrl}}/productos/{{prodId}}/categorias
+Accept: application/json
+
+### 9. ERROR 409 (RN-07): Intento de clasificar dos veces el producto en la misma categoría
+POST {{baseUrl}}/productos/{{prodId}}/categorias
+Content-Type: application/json
+
+{
+  "categoria_id": {{cat1Id}},
+  "es_principal": false
+}
+
+### 10. Filtrar listado de productos por categoria_id (sin duplicar filas)
+GET {{baseUrl}}/productos?categoria_id={{cat1Id}}
+Accept: application/json
+
+### 11. Anular Categoría 1 (DELETE 204 — RN-06: anular una categoría no anula sus productos)
+DELETE {{baseUrl}}/categorias/{{cat1Id}}
+
+### 12. Verificar que el producto clasificado en la categoría anulada sigue activo (RN-06)
+GET {{baseUrl}}/productos/{{prodId}}
+Accept: application/json
+
+### 13. ERROR 409 (RN-08): Intentar clasificar un producto en una categoría anulada
+POST {{baseUrl}}/productos/{{prodId}}/categorias
+Content-Type: application/json
+
+{
+  "categoria_id": {{cat1Id}},
+  "es_principal": false
+}
