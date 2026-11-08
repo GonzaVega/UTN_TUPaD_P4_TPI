@@ -14,7 +14,6 @@ from app.pedidos.router import router as pedido_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Inicialización de la base de datos y creación de tablas
     init_db()
     yield
 
@@ -27,7 +26,6 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    # Configuración de CORS para permitir consumo desde el frontend React (Vite)
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[
@@ -39,7 +37,6 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    # Inclusión de routers modulares
     app.include_router(categoria_router)
     app.include_router(producto_router)
     app.include_router(ingrediente_router)

@@ -7,8 +7,6 @@ from app.producto.model import Producto
 
 
 class PedidoRepository(BaseRepository[Pedido]):
-    """Repositorio específico para la entidad Pedido."""
-
     def __init__(self, session: Session):
         super().__init__(session, Pedido)
 
@@ -33,8 +31,6 @@ class PedidoRepository(BaseRepository[Pedido]):
 
 
 class DetallePedidoRepository(BaseRepository[DetallePedido]):
-    """Repositorio para la entidad DetallePedido."""
-
     def __init__(self, session: Session):
         super().__init__(session, DetallePedido)
 
@@ -44,8 +40,6 @@ class DetallePedidoRepository(BaseRepository[DetallePedido]):
 
 
 class ProductoRepository(BaseRepository[Producto]):
-    """Repositorio para consultar productos requeridos al crear un pedido."""
-
     def __init__(self, session: Session):
         super().__init__(session, Producto)
 

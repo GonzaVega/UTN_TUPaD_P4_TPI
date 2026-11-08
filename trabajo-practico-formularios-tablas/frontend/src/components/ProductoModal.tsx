@@ -75,14 +75,12 @@ export function ProductoModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
         onClick={handleClose}
         aria-hidden="true"
       />
 
-      {/* Modal Card */}
       <div className="relative bg-white rounded-2xl shadow-xl border border-slate-200 max-w-lg w-full p-6 overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <h2 className="text-lg font-bold text-slate-900">
@@ -112,7 +110,6 @@ export function ProductoModal({
             </div>
           )}
 
-          {/* Campo Nombre */}
           <form.Field
             name="nombre"
             validators={{
@@ -147,7 +144,6 @@ export function ProductoModal({
             )}
           </form.Field>
 
-          {/* Campo Precio Base */}
           <form.Field
             name="precio_base"
             validators={{
@@ -184,7 +180,6 @@ export function ProductoModal({
             )}
           </form.Field>
 
-          {/* Campo Descripción */}
           <form.Field name="descripcion">
             {(field) => (
               <div>
@@ -208,7 +203,6 @@ export function ProductoModal({
             )}
           </form.Field>
 
-          {/* Campo URL de Imagen */}
           <form.Field name="imagen_url">
             {(field) => (
               <div>
@@ -232,7 +226,6 @@ export function ProductoModal({
             )}
           </form.Field>
 
-          {/* Campo Disponible (Checkbox) */}
           <form.Field name="disponible">
             {(field) => (
               <div className="flex items-center space-x-2 pt-1">
@@ -254,7 +247,6 @@ export function ProductoModal({
             )}
           </form.Field>
 
-          {/* Botones de acción */}
           <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100">
             <Button
               variant="outline"

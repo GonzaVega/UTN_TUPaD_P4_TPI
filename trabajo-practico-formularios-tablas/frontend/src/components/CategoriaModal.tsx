@@ -66,14 +66,12 @@ export function CategoriaModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
         onClick={handleClose}
         aria-hidden="true"
       />
 
-      {/* Contenido del Modal */}
       <div className="relative bg-white rounded-2xl shadow-xl border border-slate-200 max-w-md w-full p-6 overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between pb-4 border-b border-slate-100">
           <h2 className="text-lg font-bold text-slate-900">
@@ -103,7 +101,6 @@ export function CategoriaModal({
             </div>
           )}
 
-          {/* Campo Nombre */}
           <form.Field
             name="nombre"
             validators={{
@@ -144,7 +141,6 @@ export function CategoriaModal({
             )}
           </form.Field>
 
-          {/* Campo Descripción */}
           <form.Field name="descripcion">
             {(field) => (
               <div>
@@ -168,7 +164,6 @@ export function CategoriaModal({
             )}
           </form.Field>
 
-          {/* Botones de acción con form.Subscribe */}
           <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100">
             <Button
               variant="outline"

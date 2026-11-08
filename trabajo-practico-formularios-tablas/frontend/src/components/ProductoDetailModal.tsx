@@ -14,14 +14,12 @@ export function ProductoDetailModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Modal Dialog */}
       <div className="relative bg-white rounded-2xl shadow-xl border border-slate-200 max-w-sm w-full overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-150">
         <div className="flex items-center justify-between p-4 border-b border-slate-100 bg-slate-50/50">
           <h2 className="text-sm font-bold text-slate-800">

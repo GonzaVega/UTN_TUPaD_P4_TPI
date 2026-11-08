@@ -1,9 +1,3 @@
-"""Módulo para el poblado inicial (seed) de la base de datos de TP8.
-
-Inserta categorías, productos e ingredientes durante la primera carga
-si las tablas se encuentran vacías.
-"""
-
 import logging
 import sys
 from typing import Any, Dict, List
@@ -134,7 +128,6 @@ def seed_database(session: Session) -> bool:
     total_productos = session.exec(select(func.count(Producto.id))).one()
     total_ingredientes = session.exec(select(func.count(Ingrediente.id))).one()
 
-    # Si ya hay datos, omitir
     if total_categorias > 0 or total_productos > 0 or total_ingredientes > 0:
         logger.info(
             "Base de datos con datos existentes (Cat: %d, Prod: %d, Ing: %d). Omitiendo seed.",
@@ -146,7 +139,6 @@ def seed_database(session: Session) -> bool:
 
     logger.info("Base de datos vacía detectada. Iniciando seed de datos iniciales...")
 
-    # 1. Categorías
     categorias_por_nombre: Dict[str, Categoria] = {}
     for cat_data in CATEGORIAS_INICIALES:
         nueva_cat = Categoria(
@@ -161,7 +153,6 @@ def seed_database(session: Session) -> bool:
     for cat in categorias_por_nombre.values():
         session.refresh(cat)
 
-    # 2. Productos
     productos_creados: List[Producto] = []
     asociaciones: List[ProductoCategoria] = []
 
@@ -196,7 +187,6 @@ def seed_database(session: Session) -> bool:
 
     session.commit()
 
-    # 3. Ingredientes
     for ing_nombre in INGREDIENTES_INICIALES:
         session.add(Ingrediente(nombre=ing_nombre, activo=True))
 

@@ -5,12 +5,6 @@ T = TypeVar("T")
 
 
 class BaseRepository(Generic[T]):
-    """Repositorio base que encapsula las operaciones de acceso a datos comunes.
-    
-    Siguiendo el patrón Repository, ninguna de sus operaciones confirma la
-    transacción (no invoca a commit), delegando esa responsabilidad en el Unit of Work.
-    """
-
     def __init__(self, session: Session, model: Type[T]):
         self.session = session
         self.model = model

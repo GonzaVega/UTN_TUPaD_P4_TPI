@@ -9,7 +9,6 @@ from app.ingrediente.schema import IngredienteCreate, IngredienteUpdate
 def crear_ingrediente(session: Session, data: IngredienteCreate) -> Ingrediente:
     nombre_normalizado = data.nombre.strip()
 
-    # RN-10: control opcional de unicidad sin distinción de mayúsculas (409)
     activo = session.exec(
         select(Ingrediente).where(
             func.lower(Ingrediente.nombre) == func.lower(nombre_normalizado),

@@ -95,7 +95,6 @@ export function ProductsPage() {
 
   return (
     <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Encabezado */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
@@ -141,7 +140,6 @@ export function ProductsPage() {
         />
       )}
 
-      {/* Modal de Creación / Edición con TanStack Form */}
       {isModalOpen && (
         <ProductoModal
           key={selectedProducto?.id ?? "nuevo-producto"}
@@ -152,7 +150,6 @@ export function ProductsPage() {
         />
       )}
 
-      {/* Modal de Detalle de Tarjeta (Card) */}
       <ProductoDetailModal
         producto={cardModalProducto}
         onClose={() => setCardModalProducto(null)}

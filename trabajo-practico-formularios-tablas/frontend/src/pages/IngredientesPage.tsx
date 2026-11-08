@@ -94,7 +94,6 @@ export function IngredientesPage() {
 
   return (
     <div className="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Encabezado */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight">

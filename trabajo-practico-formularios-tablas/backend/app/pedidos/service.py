@@ -16,13 +16,6 @@ from app.pedidos.unit_of_work import PedidoUnitOfWork
 
 
 class PedidoService:
-    """Servicio de lógica de negocio para pedidos y detalles.
-    
-    Aplica las reglas de negocio (RN-12, RN-13, RN-14, RN-15, RN-16)
-    y ejecuta cada caso de uso dentro de una transacción gestionada
-    por el Unit of Work.
-    """
-
     def __init__(self, uow: PedidoUnitOfWork):
         self.uow = uow
 
@@ -30,7 +23,6 @@ class PedidoService:
         if not data.detalles:
             raise PedidoInvalido("El pedido debe contener al menos un detalle.")
 
-        # RN-12: validación de productos no repetidos
         productos_set = set()
         for item in data.detalles:
             if item.producto_id in productos_set:
@@ -40,20 +32,17 @@ class PedidoService:
             productos_set.add(item.producto_id)
 
         with self.uow as uow:
-            # 1. Crear el pedido inicial con total 0 y estado PENDIENTE
             pedido = uow.pedidos.create(Pedido(estado="PENDIENTE", total=0.0))
 
             total_acumulado = 0.0
             detalles_resultado: List[DetallePedidoRead] = []
 
-            # 2. Procesar cada detalle en la misma transacción
             for item in data.detalles:
                 if item.cantidad < 1:
                     raise PedidoInvalido("La cantidad de cada producto debe ser mayor o igual a 1.")
 
                 producto = uow.productos.get_by_id(item.producto_id)
                 if producto is None:
-                    # Al lanzar la excepción, el UnitOfWork realiza rollback automático
                     raise ProductoNoEncontrado(item.producto_id)
 
                 subtotal = item.cantidad * producto.precio_base
@@ -77,10 +66,8 @@ class PedidoService:
                     )
                 )
 
-            # 3. Asignar el total calculado al pedido
             pedido.total = round(total_acumulado, 2)
 
-            # 4. Validar y construir la respuesta dentro del bloque with antes de que la sesión cierre
             return PedidoDetailRead(
                 id=pedido.id,
                 fecha=pedido.fecha,
@@ -121,7 +108,6 @@ class PedidoService:
             if pedido is None:
                 raise PedidoNoEncontrado(pedido_id)
 
-            # Impedir cambiar estado si ya se encuentra en estado terminal
             if pedido.estado in {"ENTREGADO", "CANCELADO"}:
                 raise ConflictoEstadoPedido(
                     f"No se puede modificar un pedido en estado terminal '{pedido.estado}'."

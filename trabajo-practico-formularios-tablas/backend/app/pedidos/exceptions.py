@@ -1,5 +1,4 @@
 class PedidoError(Exception):
-    """Excepción base para errores de negocio del módulo Pedidos."""
     pass
 
 
