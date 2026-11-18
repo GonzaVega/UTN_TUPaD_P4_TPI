@@ -30,8 +30,9 @@ class AuthService:
             return UserPublic.model_validate(nuevo_usuario)
 
     def authenticate(self, username: str, password: str) -> Tuple[str, UserPublic]:
+        identificador = username.strip()
         with self.uow as uow:
-            user = uow.usuarios.get_by_username(username)
+            user = uow.usuarios.get_by_username(identificador) or uow.usuarios.get_by_email(identificador)
             if not user or not verify_password(password, user.hashed_password):
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
