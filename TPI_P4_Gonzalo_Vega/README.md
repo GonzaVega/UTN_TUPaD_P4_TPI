@@ -4,6 +4,7 @@
 **Institución:** Universidad Tecnológica Nacional (UTN)  
 **Carrera:** Tecnicatura Universitaria en Programación a Distancia (TUPaD)  
 **Materia:** Programación IV  
+**Profesor:** Luciano Chiroli  
 **Estudiante:** Gonzalo Vega  
 **Repositorio GitHub:** [https://github.com/GonzaVega/UTN_TUPaD_P4_TPI](https://github.com/GonzaVega/UTN_TUPaD_P4_TPI)  
 **Video de Demostración:** `[Pegar aquí enlace público de YouTube / Drive / Loom]`
@@ -26,18 +27,18 @@ Food Store es una aplicación web full stack para un negocio de comidas donde lo
 - **Documentación OpenAPI interactiva:** disponible en `/docs` (Swagger UI) y `/redoc`.
 
 ### 🎨 Frontend
-- **Framework & Build:** React 19 + TypeScript en modo estricto (`strict: true`, cero `any`) compilado con Vite y estilado con Tailwind CSS.
+- **Framework & Build:** React 19 + TypeScript 5.9+ en modo estricto (`strict: true`, cero `any`) compilado con Vite 7 y estilado con Tailwind CSS 4.
 - **Arquitectura por Features:** modularización por dominio en `src/features/` (`auth`, `categorias`, `productos`, `pedidos`, `usuarios`), separada de utilidades transversales (`src/shared/`), estado global del cliente (`src/store/`) y enrutamiento (`src/routes/`).
 - **Manejo de Estado Desacoplado:**
   - **Server State:** TanStack Query v5 (`useQuery`, `useMutation`, invalidación inteligente de caché). Prohibido el uso de `fetch` + `useEffect` en vistas.
-  - **Client State:** Zustand con middleware `persist` para persistencia en almacenamiento local de la sesión (`authStore`, guardando solo datos públicos sin almacenar el token) y del carrito (`cartStore`).
-- **Componentes Avanzados:** TanStack Table v8 para administración de datos y TanStack Form para validación granular reactiva en formularios y modales.
+  - **Client State:** Zustand v5 con middleware `persist` para persistencia en almacenamiento local de la sesión (`authStore`, guardando solo datos públicos sin almacenar el token) y del carrito (`cartStore`).
+- **Componentes Avanzados:** TanStack Table v8 para administración de datos y TanStack Form v1 para validación granular reactiva en formularios y modales.
 
 ---
 
 ## ⚙️ Requisitos Previos
 
-- **Python:** versión 3.11 a 3.14 instalada.
+- **Python:** versión 3.11 a 3.13 instalada.
 - **Node.js:** versión 20.19 o superior.
 - **pnpm:** versión 9 o superior (o `corepack enable && corepack prepare pnpm@latest --activate`).
 - **PostgreSQL:** versión 15 o superior corriendo localmente en el puerto 5432.

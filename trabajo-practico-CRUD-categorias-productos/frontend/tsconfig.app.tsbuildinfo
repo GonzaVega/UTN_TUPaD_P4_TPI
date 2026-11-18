@@ -1,1 +1,0 @@
-{"root":["./src/App.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/CategoriaCard.tsx","./src/components/CategoriaList.tsx","./src/components/CategoriaModal.tsx","./src/components/Navbar.tsx","./src/types/categoria.ts","./src/types/producto.ts"],"version":"5.7.3"}

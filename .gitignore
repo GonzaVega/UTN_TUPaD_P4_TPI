@@ -1,5 +1,16 @@
-# Documentos de consignas (no se suben)
+# Documentos de consignas y entregas empaquetadas (no se suben)
 /Consignas TP
+**/Consignas TP/
+GUION_VIDEO_TPI.md
+**/GUION_VIDEO_TPI.md
+TELEPROMPTER_TPI.txt
+**/TELEPROMPTER_TPI.txt
+*.zip
+**/*.zip
+
+# Variables de entorno locales
+.env
+**/.env
 
 # Junk del sistema
 .DS_Store
@@ -23,8 +34,12 @@ node_modules/
 # Compilación / build
 build/
 target/
+dist/
+**/dist/
+*.tsbuildinfo
+**/*.tsbuildinfo
 
-# Bases de datos H2 y archivos generados
+# Bases de datos locales y archivos generados
 data/
 *.db
 *.mv.db
@@ -34,6 +49,12 @@ data/
 # Logs
 *.log
 
+# Python
 __pycache__/
+**/__pycache__/
+.pytest_cache/
+**/.pytest_cache/
 .venv/
-venv/ 
+**/.venv/
+venv/
+**/venv/
