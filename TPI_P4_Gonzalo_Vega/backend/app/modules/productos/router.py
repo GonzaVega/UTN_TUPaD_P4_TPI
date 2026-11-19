@@ -18,10 +18,8 @@ from app.modules.usuarios.models import Usuario
 
 router = APIRouter(prefix="/productos", tags=["Productos"])
 
-
 def get_producto_service() -> ProductoService:
     return ProductoService(ProductoUnitOfWork())
-
 
 @router.get("", response_model=ProductosPaginados)
 def listar_productos(
@@ -40,7 +38,6 @@ def listar_productos(
         disponible=disponible,
     )
 
-
 @router.get("/{id}", response_model=ProductoRead)
 def obtener_producto(
     id: int,
@@ -50,7 +47,6 @@ def obtener_producto(
         return service.obtener_por_id(id)
     except ProductoNoEncontrado as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
-
 
 @router.post("", response_model=ProductoRead, status_code=status.HTTP_201_CREATED)
 def crear_producto(
@@ -62,7 +58,6 @@ def crear_producto(
         return service.crear(data)
     except CategoriaNoEncontrada as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
-
 
 @router.put("/{id}", response_model=ProductoRead)
 def actualizar_producto(
@@ -76,7 +71,6 @@ def actualizar_producto(
     except (ProductoNoEncontrado, CategoriaNoEncontrada) as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
-
 @router.patch("/{id}/stock", response_model=ProductoRead)
 def actualizar_stock_producto(
     id: int,
@@ -88,7 +82,6 @@ def actualizar_stock_producto(
         return service.actualizar_stock(id, data)
     except ProductoNoEncontrado as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
-
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def eliminar_producto(

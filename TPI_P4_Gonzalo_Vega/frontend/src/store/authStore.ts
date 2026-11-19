@@ -29,7 +29,6 @@ export const useAuthStore = create<AuthState>()(
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
           });
 
-          // Obtener datos del perfil con la cookie HttpOnly recién establecida
           const meRes = await axiosInstance.get<UserPublic>("/auth/me");
           set({ usuario: meRes.data, cargando: false });
           return meRes.data;
@@ -43,7 +42,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           await axiosInstance.post("/auth/logout");
         } catch {
-          // Ignorar error al cerrar sesión
+
         } finally {
           set({ usuario: null, cargando: false });
         }

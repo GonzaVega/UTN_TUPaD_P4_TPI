@@ -15,10 +15,8 @@ export const CatalogoPage: React.FC = () => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<number | undefined>(undefined);
 
-  // Consulta de categorías activas para los filtros
   const { data: categorias = [] } = useCategorias();
 
-  // Consulta de productos paginados en servidor
   const {
     data: productosData,
     isLoading,
@@ -49,7 +47,7 @@ export const CatalogoPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* Hero Banner */}
+
       <div className="bg-gradient-to-r from-amber-600 to-orange-500 rounded-3xl p-8 sm:p-12 text-white shadow-md relative overflow-hidden">
         <div className="max-w-xl relative z-10">
           <span className="bg-white/20 backdrop-blur-md text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full inline-block mb-3">
@@ -67,9 +65,8 @@ export const CatalogoPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Controles: Búsqueda y Filtros de Categorías */}
       <div className="space-y-4">
-        {/* Barra de Búsqueda */}
+
         <div className="relative max-w-md">
           <input
             type="text"
@@ -83,7 +80,6 @@ export const CatalogoPage: React.FC = () => {
           </span>
         </div>
 
-        {/* Chips de Categorías */}
         <div className="flex flex-wrap gap-2 pt-1">
           <button
             type="button"
@@ -114,7 +110,6 @@ export const CatalogoPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Contenido Principal */}
       {isLoading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {Array.from({ length: PAGE_SIZE }).map((_, i) => (

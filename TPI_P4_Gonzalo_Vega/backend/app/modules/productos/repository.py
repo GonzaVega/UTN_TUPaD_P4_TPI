@@ -3,7 +3,6 @@ from sqlmodel import Session, col, func, select
 from app.core.base_repository import BaseRepository
 from app.modules.productos.models import Producto
 
-
 class ProductoRepository(BaseRepository[Producto]):
     def __init__(self, session: Session):
         super().__init__(session, Producto)
@@ -16,8 +15,7 @@ class ProductoRepository(BaseRepository[Producto]):
         categoria_id: Optional[int] = None,
         disponible: Optional[bool] = None,
     ) -> Tuple[int, List[Producto]]:
-        # Filtra siempre los productos con baja lógica
-        conditions = [Producto.activo == True]  # noqa: E712
+        conditions = [Producto.activo == True]
 
         if search_query:
             conditions.append(col(Producto.nombre).ilike(f"%{search_query.strip()}%"))

@@ -5,11 +5,9 @@ from sqlmodel import Field, SQLModel
 FormaPago = Literal["EFECTIVO", "TRANSFERENCIA"]
 EstadoPedido = Literal["PENDIENTE", "EN_PREPARACION", "ENTREGADO", "CANCELADO"]
 
-
 class ItemPedidoCreate(SQLModel):
     producto_id: int
     cantidad: int = Field(ge=1)
-
 
 class PedidoCreate(SQLModel):
     items: List[ItemPedidoCreate] = Field(min_length=1)
@@ -17,14 +15,12 @@ class PedidoCreate(SQLModel):
     direccion_entrega: str = Field(min_length=5, max_length=200)
     notas: Optional[str] = None
 
-
 class DetallePedidoRead(SQLModel):
     producto_id: int
     nombre_producto: str
     precio_unitario: float
     cantidad: int
     subtotal: float
-
 
 class PedidoRead(SQLModel):
     id: int
@@ -38,15 +34,12 @@ class PedidoRead(SQLModel):
     updated_at: datetime
     items: List[DetallePedidoRead]
 
-
 class PedidosPaginados(SQLModel):
     total: int
     items: List[PedidoRead]
 
-
 class CambioEstado(SQLModel):
     estado: EstadoPedido
-
 
 class ResumenPedidos(SQLModel):
     pendientes: int

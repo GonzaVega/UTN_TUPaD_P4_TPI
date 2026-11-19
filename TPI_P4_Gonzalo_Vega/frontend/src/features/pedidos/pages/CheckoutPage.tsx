@@ -59,7 +59,6 @@ export const CheckoutPage: React.FC = () => {
           notas: value.notas.trim() || undefined,
         });
 
-        // Vacía el carrito local y redirige a Mis Pedidos
         vaciar();
         navigate("/mis-pedidos");
       } catch (err) {
@@ -99,7 +98,7 @@ export const CheckoutPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Formulario */}
+
         <div className="lg:col-span-2">
           <Card padding="lg" className="border-slate-200 shadow-sm">
             {errorServidor && (
@@ -116,7 +115,7 @@ export const CheckoutPage: React.FC = () => {
               }}
               className="space-y-6"
             >
-              {/* Dirección */}
+
               <form.Field name="direccion_entrega">
                 {(field) => (
                   <div>
@@ -145,7 +144,6 @@ export const CheckoutPage: React.FC = () => {
                 )}
               </form.Field>
 
-              {/* Forma de Pago */}
               <form.Field name="forma_pago">
                 {(field) => (
                   <div>
@@ -193,7 +191,6 @@ export const CheckoutPage: React.FC = () => {
                 )}
               </form.Field>
 
-              {/* Notas opcionales */}
               <form.Field name="notas">
                 {(field) => (
                   <div>
@@ -236,7 +233,6 @@ export const CheckoutPage: React.FC = () => {
           </Card>
         </div>
 
-        {/* Resumen lateral */}
         <div>
           <Card padding="md" className="space-y-4 sticky top-24">
             <h3 className="font-bold text-slate-900 text-sm pb-2 border-b border-slate-100">

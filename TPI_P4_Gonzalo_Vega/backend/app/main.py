@@ -9,13 +9,10 @@ from app.modules.pedidos.router import router as pedido_router
 from app.modules.productos.router import router as producto_router
 from app.modules.usuarios.router import router as usuario_router
 
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Creación automática de tablas si no existen
     create_all_tables()
     yield
-
 
 def create_app() -> FastAPI:
     app = FastAPI(
@@ -25,7 +22,6 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    # Configuración de CORS con credenciales para el frontend
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[
@@ -38,7 +34,6 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    # Registro de routers bajo el prefijo global /api/v1
     api_prefix = "/api/v1"
     app.include_router(auth_router, prefix=api_prefix)
     app.include_router(usuario_router, prefix=api_prefix)
@@ -56,7 +51,6 @@ def create_app() -> FastAPI:
         }
 
     return app
-
 
 app = create_app()
 

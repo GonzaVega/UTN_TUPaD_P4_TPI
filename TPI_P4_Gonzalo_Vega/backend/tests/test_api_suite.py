@@ -1,5 +1,3 @@
-"""Suite completa de pruebas de integración para Food Store API."""
-
 from fastapi.testclient import TestClient
 from app.core.database import create_all_tables
 from app.db.seed import seed_database
@@ -7,11 +5,9 @@ from app.main import app
 
 client = TestClient(app)
 
-
 def setup_module():
     create_all_tables()
     seed_database()
-
 
 def test_01_root_endpoint():
     response = client.get("/")
@@ -19,7 +15,6 @@ def test_01_root_endpoint():
     data = response.json()
     assert "Food Store" in data["mensaje"]
     assert data["documentacion"] == "/docs"
-
 
 def test_02_login_admin():
     response = client.post(
@@ -30,7 +25,6 @@ def test_02_login_admin():
     assert response.json()["message"] == "Login exitoso"
     assert "access_token" in response.cookies
 
-
 def test_03_login_bad_credentials():
     response = client.post(
         "/api/v1/auth/token",
@@ -38,7 +32,6 @@ def test_03_login_bad_credentials():
     )
     assert response.status_code == 401
     assert response.json()["detail"] == "Credenciales incorrectas"
-
 
 def test_04_register_client():
     response = client.post(
@@ -57,7 +50,6 @@ def test_04_register_client():
     assert data["disabled"] is False
     assert "hashed_password" not in data
 
-
 def test_05_register_duplicate_username_and_email():
     response = client.post(
         "/api/v1/auth/register",
@@ -70,13 +62,10 @@ def test_05_register_duplicate_username_and_email():
     )
     assert response.status_code == 409
 
-
 def test_06_auth_me_without_cookie():
-    # Nueva instancia de cliente sin cookies
     no_auth_client = TestClient(app)
     response = no_auth_client.get("/api/v1/auth/me")
     assert response.status_code == 401
-
 
 def test_07_auth_me_with_cookie():
     user_client = TestClient(app)
@@ -92,7 +81,6 @@ def test_07_auth_me_with_cookie():
     assert data["username"] == "cliente_test"
     assert data["role"] == "user"
 
-
 def test_08_admin_user_management():
     admin_client = TestClient(app)
     admin_client.post(
@@ -100,23 +88,19 @@ def test_08_admin_user_management():
         data={"username": "admin", "password": "Admin1234!"},
     )
 
-    # Listar usuarios
     users_res = admin_client.get("/api/v1/admin/usuarios")
     assert users_res.status_code == 200
     users = users_res.json()
     test_user = next(u for u in users if u["username"] == "cliente_test")
     admin_user = next(u for u in users if u["username"] == "admin")
 
-    # Admin intenta desactivarse a sí mismo -> 400
     self_deact = admin_client.post(f"/api/v1/admin/usuarios/{admin_user['id']}/desactivar")
     assert self_deact.status_code == 400
 
-    # Desactivar test_user -> 200
     deact_res = admin_client.post(f"/api/v1/admin/usuarios/{test_user['id']}/desactivar")
     assert deact_res.status_code == 200
     assert deact_res.json()["disabled"] is True
 
-    # Test user intenta loguearse estando desactivado -> 400
     user_client = TestClient(app)
     login_disabled = user_client.post(
         "/api/v1/auth/token",
@@ -125,11 +109,9 @@ def test_08_admin_user_management():
     assert login_disabled.status_code == 400
     assert "desactivada" in login_disabled.json()["detail"]
 
-    # Reactivar usuario -> 200
     react_res = admin_client.post(f"/api/v1/admin/usuarios/{test_user['id']}/activar")
     assert react_res.status_code == 200
     assert react_res.json()["disabled"] is False
-
 
 def test_09_categorias_crud_and_soft_delete():
     admin_client = TestClient(app)
@@ -138,7 +120,6 @@ def test_09_categorias_crud_and_soft_delete():
         data={"username": "admin", "password": "Admin1234!"},
     )
 
-    # Crear categoría
     cat_res = admin_client.post(
         "/api/v1/categorias",
         json={"nombre": "Minutas", "descripcion": "Platos rápidos al paso"},
@@ -147,14 +128,12 @@ def test_09_categorias_crud_and_soft_delete():
     cat = cat_res.json()
     cat_id = cat["id"]
 
-    # Duplicada -> 409
     dup_res = admin_client.post(
         "/api/v1/categorias",
         json={"nombre": "Minutas", "descripcion": "Otra"},
     )
     assert dup_res.status_code == 409
 
-    # Actualizar -> 200
     upd_res = admin_client.put(
         f"/api/v1/categorias/{cat_id}",
         json={"nombre": "Minutas y Ensaladas", "descripcion": "Actualizada"},
@@ -162,21 +141,17 @@ def test_09_categorias_crud_and_soft_delete():
     assert upd_res.status_code == 200
     assert upd_res.json()["nombre"] == "Minutas y Ensaladas"
 
-    # Baja lógica -> 204
     del_res = admin_client.delete(f"/api/v1/categorias/{cat_id}")
     assert del_res.status_code == 204
 
-    # Tras baja lógica, obtener por id responde 404
     get_res = admin_client.get(f"/api/v1/categorias/{cat_id}")
     assert get_res.status_code == 404
 
-    # La baja lógica NO libera el nombre único -> 409
     dup2_res = admin_client.post(
         "/api/v1/categorias",
         json={"nombre": "Minutas y Ensaladas", "descripcion": "Intento"},
     )
     assert dup2_res.status_code == 409
-
 
 def test_10_productos_crud():
     admin_client = TestClient(app)
@@ -188,7 +163,6 @@ def test_10_productos_crud():
     cats = admin_client.get("/api/v1/categorias").json()
     cat_id = cats[0]["id"]
 
-    # Crear producto
     prod_res = admin_client.post(
         "/api/v1/productos",
         json={
@@ -207,7 +181,6 @@ def test_10_productos_crud():
     assert prod["stock"] == 50
     assert prod["categoria"]["id"] == cat_id
 
-    # Actualizar stock con PATCH
     patch_res = admin_client.patch(
         f"/api/v1/productos/{prod_id}/stock",
         json={"stock": 40, "disponible": True},
@@ -215,13 +188,11 @@ def test_10_productos_crud():
     assert patch_res.status_code == 200
     assert patch_res.json()["stock"] == 40
 
-    # Listado paginado con búsqueda
     list_res = admin_client.get("/api/v1/productos?search=empanada&limit=5")
     assert list_res.status_code == 200
     p_data = list_res.json()
     assert p_data["total"] >= 1
     assert any(p["id"] == prod_id for p in p_data["items"])
-
 
 def test_11_pedidos_and_business_rules():
     admin_client = TestClient(app)
@@ -236,13 +207,11 @@ def test_11_pedidos_and_business_rules():
         data={"username": "cliente_test", "password": "Password123!"},
     )
 
-    # Obtenemos productos disponibles
     prods = user_client.get("/api/v1/productos?limit=10").json()["items"]
     p1 = prods[0]
     p2 = prods[1]
     initial_stock_p1 = p1["stock"]
 
-    # RN-01: Producto repetido en pedido -> 400
     res_rep = user_client.post(
         "/api/v1/pedidos",
         json={
@@ -257,7 +226,6 @@ def test_11_pedidos_and_business_rules():
     assert res_rep.status_code == 400
     assert "duplicado" in res_rep.json()["detail"].lower()
 
-    # RN-01: Stock insuficiente -> 400 y ROLLBACK automático (no descuenta nada)
     res_stock = user_client.post(
         "/api/v1/pedidos",
         json={
@@ -271,11 +239,9 @@ def test_11_pedidos_and_business_rules():
     assert res_stock.status_code == 400
     assert "insuficiente" in res_stock.json()["detail"].lower()
 
-    # Comprobar que no se alteró el stock tras error
     p1_check = user_client.get(f"/api/v1/productos/{p1['id']}").json()
     assert p1_check["stock"] == initial_stock_p1
 
-    # Crear pedido válido -> 201 y stock descontado
     cant = 2
     res_crear = user_client.post(
         "/api/v1/pedidos",
@@ -296,11 +262,9 @@ def test_11_pedidos_and_business_rules():
     assert len(pedido["items"]) == 1
     assert pedido["items"][0]["nombre_producto"] == p1["nombre"]
 
-    # Verificar descuento de stock en BD
     p1_after = user_client.get(f"/api/v1/productos/{p1['id']}").json()
     assert p1_after["stock"] == initial_stock_p1 - cant
 
-    # RN-04: Otro cliente no puede ver el pedido
     otro_client = TestClient(app)
     otro_client.post(
         "/api/v1/auth/register",
@@ -318,7 +282,6 @@ def test_11_pedidos_and_business_rules():
     ajeno_res = otro_client.get(f"/api/v1/pedidos/{pedido_id}")
     assert ajeno_res.status_code == 403
 
-    # RN-03 & RN-04: Cancelar pedido por cliente dueño en PENDIENTE -> restituye stock
     res_canc = user_client.patch(f"/api/v1/pedidos/{pedido_id}/cancelar")
     assert res_canc.status_code == 200
     assert res_canc.json()["estado"] == "CANCELADO"
@@ -326,14 +289,12 @@ def test_11_pedidos_and_business_rules():
     p1_rest = user_client.get(f"/api/v1/productos/{p1['id']}").json()
     assert p1_rest["stock"] == initial_stock_p1
 
-    # RN-02: Transición desde estado terminal CANCELADO -> 400
     res_trans_inv = admin_client.patch(
         f"/api/v1/pedidos/{pedido_id}/estado",
         json={"estado": "EN_PREPARACION"},
     )
     assert res_trans_inv.status_code == 400
 
-    # Crear otro pedido y avanzar máquina de estados: PENDIENTE -> EN_PREPARACION -> ENTREGADO
     res2 = user_client.post(
         "/api/v1/pedidos",
         json={
@@ -344,7 +305,6 @@ def test_11_pedidos_and_business_rules():
     )
     p2_id = res2.json()["id"]
 
-    # Admin avanza a EN_PREPARACION
     res_prep = admin_client.patch(
         f"/api/v1/pedidos/{p2_id}/estado",
         json={"estado": "EN_PREPARACION"},
@@ -352,11 +312,9 @@ def test_11_pedidos_and_business_rules():
     assert res_prep.status_code == 200
     assert res_prep.json()["estado"] == "EN_PREPARACION"
 
-    # Cliente ya no puede cancelar en EN_PREPARACION -> 400
     cant_cancel = user_client.patch(f"/api/v1/pedidos/{p2_id}/cancelar")
     assert cant_cancel.status_code == 400
 
-    # Admin avanza a ENTREGADO
     res_entr = admin_client.patch(
         f"/api/v1/pedidos/{p2_id}/estado",
         json={"estado": "ENTREGADO"},
@@ -364,14 +322,12 @@ def test_11_pedidos_and_business_rules():
     assert res_entr.status_code == 200
     assert res_entr.json()["estado"] == "ENTREGADO"
 
-    # Resumen de pedidos
     resumen_res = admin_client.get("/api/v1/pedidos/resumen")
     assert resumen_res.status_code == 200
     r_data = resumen_res.json()
     assert r_data["entregados"] >= 1
     assert r_data["cancelados"] >= 1
     assert r_data["ingresos_entregados"] >= p2["precio_base"]
-
 
 if __name__ == "__main__":
     setup_module()

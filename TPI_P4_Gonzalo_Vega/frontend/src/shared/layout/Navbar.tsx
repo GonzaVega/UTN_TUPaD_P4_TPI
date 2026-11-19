@@ -31,7 +31,7 @@ export const Navbar: React.FC = () => {
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo y Enlaces Principales */}
+
           <div className="flex items-center space-x-6">
             <Link to="/" className="flex items-center space-x-2 text-slate-900 font-black text-xl tracking-tight">
               <span className="text-2xl">🍕</span>
@@ -51,7 +51,6 @@ export const Navbar: React.FC = () => {
             </nav>
           </div>
 
-          {/* Enlaces de Administración (solo para admin) */}
           {usuario?.role === "admin" && (
             <div className="hidden lg:flex items-center space-x-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
               <span className="text-[10px] font-bold text-amber-800 bg-amber-200 px-2 py-0.5 rounded mr-1">
@@ -75,9 +74,8 @@ export const Navbar: React.FC = () => {
             </div>
           )}
 
-          {/* Carrito y Sesión de Usuario */}
           <div className="flex items-center space-x-3">
-            {/* Botón Carrito */}
+
             <Link
               to="/carrito"
               className="relative p-2 text-slate-700 hover:text-amber-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
@@ -91,7 +89,6 @@ export const Navbar: React.FC = () => {
               )}
             </Link>
 
-            {/* Estado de Sesión */}
             {usuario ? (
               <div className="flex items-center space-x-3 pl-2 border-l border-slate-200">
                 <div className="text-right hidden sm:block">

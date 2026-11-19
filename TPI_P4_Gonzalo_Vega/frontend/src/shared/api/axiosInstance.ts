@@ -14,7 +14,6 @@ axiosInstance.interceptors.response.use(
       const status = error.response?.status;
       const detail = error.response?.data?.detail;
 
-      // Si vence la sesión (401 fuera del login) o la cuenta fue desactivada (400)
       const isAuthPath = url.includes("/auth/token") || url.includes("/auth/me");
 
       if (status === 401 && !isAuthPath) {

@@ -2,24 +2,20 @@ from typing import List
 from app.modules.usuarios.schemas import UserPublic
 from app.modules.usuarios.unit_of_work import UsuarioUnitOfWork
 
-
 class UsuarioNoEncontrado(Exception):
     def __init__(self, user_id: int):
         self.user_id = user_id
         super().__init__(f"Usuario con id {user_id} no encontrado")
-
 
 class UsuarioDuplicado(Exception):
     def __init__(self, detalle: str):
         self.detalle = detalle
         super().__init__(detalle)
 
-
 class OperacionInvalidaUsuario(Exception):
     def __init__(self, detalle: str):
         self.detalle = detalle
         super().__init__(detalle)
-
 
 class UsuarioService:
     def __init__(self, uow: UsuarioUnitOfWork):

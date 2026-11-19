@@ -5,7 +5,6 @@ from sqlmodel import Field, Relationship, SQLModel
 if TYPE_CHECKING:
     from app.modules.pedidos.models import Pedido
 
-
 class Usuario(SQLModel, table=True):
     __tablename__ = "usuario"
 

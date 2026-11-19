@@ -117,7 +117,6 @@ export const AdminPedidosPage: React.FC = () => {
                 Detalle
               </button>
 
-              {/* Botones según la máquina de estados */}
               {p.estado === "PENDIENTE" && (
                 <>
                   <button
@@ -192,7 +191,6 @@ export const AdminPedidosPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Filtro por Estado */}
         <div className="flex items-center space-x-2">
           <label className="text-xs font-semibold text-slate-600">Estado:</label>
           <select
@@ -266,7 +264,6 @@ export const AdminPedidosPage: React.FC = () => {
         </div>
       )}
 
-      {/* Modal Detalle de Pedido */}
       <Modal
         isOpen={Boolean(pedidoSeleccionado)}
         onClose={() => setPedidoSeleccionado(null)}
@@ -322,7 +319,6 @@ export const AdminPedidosPage: React.FC = () => {
               <span className="text-amber-600">${pedidoSeleccionado.total.toFixed(2)}</span>
             </div>
 
-            {/* Acciones del modal */}
             <div className="pt-3 border-t border-slate-100 flex flex-wrap justify-end gap-2">
               {pedidoSeleccionado.estado === "PENDIENTE" && (
                 <>

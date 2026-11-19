@@ -3,7 +3,6 @@ from sqlmodel import Session, select
 from app.core.base_repository import BaseRepository
 from app.modules.categorias.models import Categoria
 
-
 class CategoriaRepository(BaseRepository[Categoria]):
     def __init__(self, session: Session):
         super().__init__(session, Categoria)
@@ -13,6 +12,6 @@ class CategoriaRepository(BaseRepository[Categoria]):
         return self.session.exec(statement).first()
 
     def get_activas(self) -> List[Categoria]:
-        statement = select(Categoria).where(Categoria.activo == True).order_by(Categoria.id)  # noqa: E712
+        statement = select(Categoria).where(Categoria.activo == True).order_by(Categoria.id)
         return list(self.session.exec(statement).all())
 

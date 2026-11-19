@@ -197,7 +197,6 @@ export const AdminCategoriasPage: React.FC = () => {
         </div>
       )}
 
-      {/* Modal Crear / Editar con TanStack Form */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

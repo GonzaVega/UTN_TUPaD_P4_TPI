@@ -28,7 +28,7 @@ import type { Producto } from "../types";
 const columnHelper = createColumnHelper<Producto>();
 
 export const AdminProductosPage: React.FC = () => {
-  // Pide limit=100 según consigna
+
   const {
     data: responseData,
     isLoading,
@@ -286,7 +286,6 @@ export const AdminProductosPage: React.FC = () => {
         </div>
       )}
 
-      {/* Modal Crear / Editar Producto */}
       <Modal
         isOpen={modalProductoOpen}
         onClose={() => setModalProductoOpen(false)}
@@ -318,7 +317,6 @@ export const AdminProductosPage: React.FC = () => {
         />
       </Modal>
 
-      {/* Modal Stock y Disponibilidad */}
       <Modal
         isOpen={modalStockOpen}
         onClose={() => setModalStockOpen(false)}
@@ -349,7 +347,6 @@ export const AdminProductosPage: React.FC = () => {
   );
 };
 
-// Formulario completo de producto con TanStack Form
 interface ProductoFormModalProps {
   producto: Producto | null;
   categorias: Array<{ id: number; nombre: string }>;
@@ -434,7 +431,6 @@ const ProductoFormModal: React.FC<ProductoFormModalProps> = ({
         </div>
       )}
 
-      {/* Nombre */}
       <form.Field name="nombre">
         {(field) => (
           <div>
@@ -457,7 +453,6 @@ const ProductoFormModal: React.FC<ProductoFormModalProps> = ({
         )}
       </form.Field>
 
-      {/* Categoría */}
       <form.Field name="categoria_id">
         {(field) => (
           <div>
@@ -485,7 +480,6 @@ const ProductoFormModal: React.FC<ProductoFormModalProps> = ({
         )}
       </form.Field>
 
-      {/* Precio y Stock */}
       <div className="grid grid-cols-2 gap-4">
         <form.Field name="precio_base">
           {(field) => (
@@ -535,7 +529,6 @@ const ProductoFormModal: React.FC<ProductoFormModalProps> = ({
         </form.Field>
       </div>
 
-      {/* URL de Imagen */}
       <form.Field name="imagen_url">
         {(field) => (
           <div>
@@ -556,7 +549,6 @@ const ProductoFormModal: React.FC<ProductoFormModalProps> = ({
         )}
       </form.Field>
 
-      {/* Descripción */}
       <form.Field name="descripcion">
         {(field) => (
           <div>
@@ -576,7 +568,6 @@ const ProductoFormModal: React.FC<ProductoFormModalProps> = ({
         )}
       </form.Field>
 
-      {/* Checkbox Disponible */}
       <form.Field name="disponible">
         {(field) => (
           <div className="flex items-center space-x-2 pt-1">
@@ -595,7 +586,6 @@ const ProductoFormModal: React.FC<ProductoFormModalProps> = ({
         )}
       </form.Field>
 
-      {/* Botones */}
       <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-100">
         <Button variant="outline" type="button" onClick={onClose}>
           Cancelar
@@ -617,7 +607,6 @@ const ProductoFormModal: React.FC<ProductoFormModalProps> = ({
   );
 };
 
-// Formulario de Stock y Disponibilidad con TanStack Form
 interface StockFormModalProps {
   producto: Producto;
   errorServidor: string | null;

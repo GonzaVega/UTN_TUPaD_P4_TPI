@@ -136,7 +136,7 @@ export const AdminUsuariosPage: React.FC = () => {
                   Activar
                 </button>
               ) : (
-                // Regla obligatoria: No se muestra el botón desactivar en la fila del admin logueado
+
                 !isCurrentSessionUser && (
                   <button
                     type="button"

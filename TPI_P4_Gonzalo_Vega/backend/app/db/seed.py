@@ -1,5 +1,3 @@
-"""Módulo para el poblado inicial (seed) idempotente de la base de datos Food Store en PostgreSQL."""
-
 import logging
 from sqlmodel import Session, select
 from app.core.database import create_all_tables, engine
@@ -123,13 +121,10 @@ PRODUCTOS_DATA = [
     },
 ]
 
-
 def seed_database() -> None:
-    """Carga los registros iniciales si no existen (operación idempotente)."""
     create_all_tables()
 
     with Session(engine) as session:
-        # 1. Usuario Administrador
         admin = session.exec(
             select(Usuario).where(Usuario.username == "admin")
         ).first()
@@ -149,7 +144,6 @@ def seed_database() -> None:
         else:
             logger.info("Usuario admin ya existe. Omitiendo creación.")
 
-        # 2. Categorías
         categorias_map = {}
         for cat_info in CATEGORIAS_DATA:
             cat = session.exec(
@@ -167,7 +161,6 @@ def seed_database() -> None:
                 logger.info("Categoría creada: %s", cat.nombre)
             categorias_map[cat.nombre] = cat
 
-        # 3. Productos
         for prod_info in PRODUCTOS_DATA:
             cat_obj = categorias_map.get(prod_info["categoria"])
             if cat_obj is None:
@@ -192,7 +185,6 @@ def seed_database() -> None:
                 logger.info("Producto creado: %s", prod.nombre)
 
         logger.info("Proceso de seed finalizado con éxito.")
-
 
 if __name__ == "__main__":
     seed_database()

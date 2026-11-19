@@ -5,7 +5,6 @@ import { useAuthStore } from "./store/authStore";
 export const App: React.FC = () => {
   const checkSession = useAuthStore((state) => state.checkSession);
 
-  // Única llamada permitida en useEffect al montar la aplicación
   useEffect(() => {
     checkSession();
   }, [checkSession]);

@@ -11,12 +11,10 @@ from app.modules.productos.schemas import (
 )
 from app.modules.productos.unit_of_work import ProductoUnitOfWork
 
-
 class ProductoNoEncontrado(Exception):
     def __init__(self, prod_id: int):
         self.prod_id = prod_id
         super().__init__(f"Producto con id {prod_id} no encontrado o inactivo")
-
 
 class ProductoService:
     def __init__(self, uow: ProductoUnitOfWork):

@@ -20,42 +20,35 @@ MAPA_TRANSICIONES: Dict[str, Set[str]] = {
     "CANCELADO": set(),
 }
 
-
 class PedidoNoEncontrado(Exception):
     def __init__(self, pedido_id: int):
         self.pedido_id = pedido_id
         super().__init__(f"Pedido con id {pedido_id} no encontrado")
-
 
 class PedidoAjeno(Exception):
     def __init__(self, pedido_id: int):
         self.pedido_id = pedido_id
         super().__init__(f"No tiene permisos para acceder al pedido con id {pedido_id}")
 
-
 class StockInsuficiente(Exception):
     def __init__(self, detalle: str):
         self.detalle = detalle
         super().__init__(detalle)
-
 
 class ProductoNoDisponible(Exception):
     def __init__(self, detalle: str):
         self.detalle = detalle
         super().__init__(detalle)
 
-
 class ProductoRepetido(Exception):
     def __init__(self, detalle: str):
         self.detalle = detalle
         super().__init__(detalle)
 
-
 class TransicionInvalida(Exception):
     def __init__(self, detalle: str):
         self.detalle = detalle
         super().__init__(detalle)
-
 
 def _to_pedido_read(p: Pedido) -> PedidoRead:
     detalles = [
@@ -81,13 +74,11 @@ def _to_pedido_read(p: Pedido) -> PedidoRead:
         items=detalles,
     )
 
-
 class PedidoService:
     def __init__(self, uow: PedidoUnitOfWork):
         self.uow = uow
 
     def crear_pedido(self, usuario_id: int, data: PedidoCreate) -> PedidoRead:
-        # RN-01: Validar productos no repetidos
         productos_vistos = set()
         for item in data.items:
             if item.producto_id in productos_vistos:
@@ -97,7 +88,6 @@ class PedidoService:
             productos_vistos.add(item.producto_id)
 
         with self.uow as uow:
-            # Crea el pedido en PENDIENTE con total inicial 0.0
             ahora = datetime.now(timezone.utc)
             pedido = Pedido(
                 usuario_id=usuario_id,
@@ -127,13 +117,11 @@ class PedidoService:
                         f"Stock insuficiente para '{producto.nombre}'. Solicitado: {item.cantidad}, Disponible: {producto.stock}"
                     )
 
-                # Descuento de stock en la transacción
                 producto.stock -= item.cantidad
 
                 subtotal = round(producto.precio_base * item.cantidad, 2)
                 total_acumulado += subtotal
 
-                # Crea línea copiando nombre y precio unitario (inmutabilidad RN-05)
                 detalle = DetallePedido(
                     pedido_id=pedido.id,
                     producto_id=producto.id,
@@ -158,7 +146,6 @@ class PedidoService:
         estado: Optional[str] = None,
     ) -> PedidosPaginados:
         with self.uow as uow:
-            # RN-04: admin ve todos, cliente solo sus propios pedidos
             uid = None if current_user.role == "admin" else current_user.id
             total, pedidos = uow.pedidos.list_by_usuario(
                 usuario_id=uid,
@@ -180,7 +167,6 @@ class PedidoService:
             if pedido is None:
                 raise PedidoNoEncontrado(pedido_id)
 
-            # RN-04: Cliente solo ve sus propios pedidos
             if current_user.role != "admin" and pedido.usuario_id != current_user.id:
                 raise PedidoAjeno(pedido_id)
 
@@ -192,14 +178,12 @@ class PedidoService:
             if pedido is None:
                 raise PedidoNoEncontrado(pedido_id)
 
-            # RN-02: Validar según la máquina de estados
             permitidos = MAPA_TRANSICIONES.get(pedido.estado, set())
             if data.estado not in permitidos:
                 raise TransicionInvalida(
                     f"Transición de estado inválida: no se puede pasar de '{pedido.estado}' a '{data.estado}'"
                 )
 
-            # RN-03: Restitución de stock si se cancela
             if data.estado == "CANCELADO":
                 for detalle in pedido.items:
                     prod = uow.productos.get_by_id(detalle.producto_id)
@@ -218,17 +202,14 @@ class PedidoService:
             if pedido is None:
                 raise PedidoNoEncontrado(pedido_id)
 
-            # RN-04: El cliente solo puede cancelar sus propios pedidos
             if pedido.usuario_id != current_user.id:
                 raise PedidoAjeno(pedido_id)
 
-            # RN-04: El cliente solo puede cancelar en estado PENDIENTE
             if pedido.estado != "PENDIENTE":
                 raise TransicionInvalida(
                     f"El pedido no se puede cancelar porque su estado actual es '{pedido.estado}' (solo permitido en PENDIENTE)"
                 )
 
-            # RN-03: Restitución de stock
             for detalle in pedido.items:
                 prod = uow.productos.get_by_id(detalle.producto_id)
                 if prod is not None:

@@ -23,10 +23,8 @@ from app.modules.usuarios.models import Usuario
 
 router = APIRouter(prefix="/pedidos", tags=["Pedidos"])
 
-
 def get_pedido_service() -> PedidoService:
     return PedidoService(PedidoUnitOfWork())
-
 
 @router.post("", response_model=PedidoRead, status_code=status.HTTP_201_CREATED)
 def crear_pedido(
@@ -40,7 +38,6 @@ def crear_pedido(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except (StockInsuficiente, ProductoNoDisponible, ProductoRepetido) as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-
 
 @router.get("", response_model=PedidosPaginados)
 def listar_pedidos(
@@ -57,15 +54,12 @@ def listar_pedidos(
         estado=estado,
     )
 
-
 @router.get("/resumen", response_model=ResumenPedidos)
 def obtener_resumen_pedidos(
     _: Usuario = Depends(require_role(["admin"])),
     service: PedidoService = Depends(get_pedido_service),
 ) -> ResumenPedidos:
-    # Se declara antes de /{id} para evitar colisión de ruta en FastAPI
     return service.obtener_resumen()
-
 
 @router.get("/{id}", response_model=PedidoRead)
 def obtener_pedido_por_id(
@@ -80,7 +74,6 @@ def obtener_pedido_por_id(
     except PedidoAjeno as e:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
 
-
 @router.patch("/{id}/estado", response_model=PedidoRead)
 def cambiar_estado_pedido(
     id: int,
@@ -94,7 +87,6 @@ def cambiar_estado_pedido(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except TransicionInvalida as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-
 
 @router.patch("/{id}/cancelar", response_model=PedidoRead)
 def cancelar_pedido_cliente(

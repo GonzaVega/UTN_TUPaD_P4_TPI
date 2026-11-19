@@ -71,7 +71,7 @@ export const LoginPage: React.FC = () => {
           }}
           className="space-y-4"
         >
-          {/* Username */}
+
           <form.Field name="username">
             {(field) => (
               <div>
@@ -100,7 +100,6 @@ export const LoginPage: React.FC = () => {
             )}
           </form.Field>
 
-          {/* Password */}
           <form.Field name="password">
             {(field) => (
               <div>

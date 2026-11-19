@@ -3,7 +3,6 @@ from sqlmodel import Session, select
 from app.core.base_repository import BaseRepository
 from app.modules.usuarios.models import Usuario
 
-
 class UsuarioRepository(BaseRepository[Usuario]):
     def __init__(self, session: Session):
         super().__init__(session, Usuario)

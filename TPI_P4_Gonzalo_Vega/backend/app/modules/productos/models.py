@@ -5,7 +5,6 @@ if TYPE_CHECKING:
     from app.modules.categorias.models import Categoria
     from app.modules.pedidos.models import DetallePedido
 
-
 class Producto(SQLModel, table=True):
     __tablename__ = "producto"
 

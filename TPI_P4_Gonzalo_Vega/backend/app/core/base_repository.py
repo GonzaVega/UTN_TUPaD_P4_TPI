@@ -3,12 +3,7 @@ from sqlmodel import Session, select
 
 T = TypeVar("T")
 
-
 class BaseRepository(Generic[T]):
-    """Repositorio genérico base con operaciones CRUD elementales sobre la sesión compartida.
-
-    No contiene reglas de negocio ni invoca a session.commit().
-    """
 
     def __init__(self, session: Session, model: Type[T]):
         self.session = session

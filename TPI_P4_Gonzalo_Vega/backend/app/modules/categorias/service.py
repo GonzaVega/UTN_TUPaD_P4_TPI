@@ -7,18 +7,15 @@ from app.modules.categorias.schemas import (
 )
 from app.modules.categorias.unit_of_work import CategoriaUnitOfWork
 
-
 class CategoriaNoEncontrada(Exception):
     def __init__(self, cat_id: int):
         self.cat_id = cat_id
         super().__init__(f"Categoría con id {cat_id} no encontrada o inactiva")
 
-
 class NombreDuplicado(Exception):
     def __init__(self, detalle: str):
         self.detalle = detalle
         super().__init__(detalle)
-
 
 class CategoriaService:
     def __init__(self, uow: CategoriaUnitOfWork):

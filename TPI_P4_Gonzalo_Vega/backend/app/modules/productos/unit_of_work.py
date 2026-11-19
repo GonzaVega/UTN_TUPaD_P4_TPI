@@ -3,7 +3,6 @@ from app.core.unit_of_work import UnitOfWork
 from app.modules.categorias.repository import CategoriaRepository
 from app.modules.productos.repository import ProductoRepository
 
-
 class ProductoUnitOfWork(UnitOfWork):
     def __init__(self):
         super().__init__()

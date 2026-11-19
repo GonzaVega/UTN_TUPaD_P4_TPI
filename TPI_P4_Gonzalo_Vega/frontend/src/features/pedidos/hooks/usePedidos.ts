@@ -27,7 +27,7 @@ export function useResumenPedidos() {
   return useQuery({
     queryKey: ["pedidos", "resumen"],
     queryFn: () => pedidosApi.getResumen(),
-    refetchInterval: 1000 * 20, // refresco suave cada 20 segundos
+    refetchInterval: 1000 * 20,
   });
 }
 

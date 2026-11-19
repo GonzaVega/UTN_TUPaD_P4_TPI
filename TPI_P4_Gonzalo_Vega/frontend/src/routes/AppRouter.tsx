@@ -19,16 +19,15 @@ export const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Rutas con el Layout Principal */}
+
         <Route element={<MainLayout />}>
-          {/* Públicas */}
+
           <Route path="/" element={<CatalogoPage />} />
           <Route path="/carrito" element={<CarritoPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
-          {/* Protegidas: Requiere sesión activa (user o admin) */}
           <Route
             path="/checkout"
             element={
@@ -46,7 +45,6 @@ export const AppRouter: React.FC = () => {
             }
           />
 
-          {/* Protegidas: Exclusivas para rol admin */}
           <Route
             path="/admin/resumen"
             element={
@@ -88,7 +86,6 @@ export const AppRouter: React.FC = () => {
             }
           />
 
-          {/* Redirección por defecto */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

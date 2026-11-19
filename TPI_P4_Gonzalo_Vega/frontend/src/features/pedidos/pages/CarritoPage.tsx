@@ -51,7 +51,7 @@ export const CarritoPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Lista de Ítems */}
+
         <div className="lg:col-span-2 space-y-3">
           {items.map((item) => (
             <Card key={item.producto_id} padding="sm" className="flex items-center space-x-4">
@@ -79,7 +79,6 @@ export const CarritoPage: React.FC = () => {
                 </p>
               </div>
 
-              {/* Controles de cantidad */}
               <div className="flex items-center space-x-2">
                 <button
                   type="button"
@@ -119,7 +118,6 @@ export const CarritoPage: React.FC = () => {
           ))}
         </div>
 
-        {/* Resumen de Compra */}
         <div>
           <Card padding="md" className="space-y-4 sticky top-24">
             <h3 className="font-bold text-slate-900 text-base pb-3 border-b border-slate-100">

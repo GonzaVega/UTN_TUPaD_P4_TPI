@@ -16,17 +16,14 @@ from app.modules.usuarios.models import Usuario
 
 router = APIRouter(prefix="/categorias", tags=["Categorías"])
 
-
 def get_categoria_service() -> CategoriaService:
     return CategoriaService(CategoriaUnitOfWork())
-
 
 @router.get("", response_model=List[CategoriaRead])
 def listar_categorias(
     service: CategoriaService = Depends(get_categoria_service),
 ) -> List[CategoriaRead]:
     return service.listar_activas()
-
 
 @router.get("/{id}", response_model=CategoriaRead)
 def obtener_categoria(
@@ -38,7 +35,6 @@ def obtener_categoria(
     except CategoriaNoEncontrada as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
-
 @router.post("", response_model=CategoriaRead, status_code=status.HTTP_201_CREATED)
 def crear_categoria(
     data: CategoriaCreate,
@@ -49,7 +45,6 @@ def crear_categoria(
         return service.crear(data)
     except NombreDuplicado as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
-
 
 @router.put("/{id}", response_model=CategoriaRead)
 def actualizar_categoria(
@@ -64,7 +59,6 @@ def actualizar_categoria(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     except NombreDuplicado as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
-
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def eliminar_categoria(

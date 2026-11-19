@@ -6,7 +6,6 @@ if TYPE_CHECKING:
     from app.modules.productos.models import Producto
     from app.modules.usuarios.models import Usuario
 
-
 class DetallePedido(SQLModel, table=True):
     __tablename__ = "detalle_pedido"
 
@@ -20,7 +19,6 @@ class DetallePedido(SQLModel, table=True):
 
     pedido: Optional["Pedido"] = Relationship(back_populates="items")
     producto: Optional["Producto"] = Relationship(back_populates="detalles")
-
 
 class Pedido(SQLModel, table=True):
     __tablename__ = "pedido"

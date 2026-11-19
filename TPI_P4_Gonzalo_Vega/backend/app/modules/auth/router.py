@@ -11,10 +11,8 @@ from app.modules.usuarios.unit_of_work import UsuarioUnitOfWork
 
 router = APIRouter(prefix="/auth", tags=["Autenticación"])
 
-
 def get_auth_service() -> AuthService:
     return AuthService(UsuarioUnitOfWork())
-
 
 @router.post("/register", response_model=UserPublic, status_code=status.HTTP_201_CREATED)
 def register(
@@ -29,7 +27,6 @@ def register(
             detail=str(e),
         )
 
-
 @router.post("/token", response_model=MessageResponse)
 def login(
     response: Response,
@@ -38,7 +35,6 @@ def login(
 ) -> MessageResponse:
     token, _ = service.authenticate(form_data.username, form_data.password)
 
-    # El token viaja en cookie HttpOnly access_token que expira a los 30 minutos
     response.set_cookie(
         key="access_token",
         value=token,
@@ -50,12 +46,10 @@ def login(
     )
     return MessageResponse(message="Login exitoso")
 
-
 @router.post("/logout", response_model=MessageResponse)
 def logout(response: Response) -> MessageResponse:
     response.delete_cookie(key="access_token", path="/")
     return MessageResponse(message="Sesión cerrada exitosamente")
-
 
 @router.get("/me", response_model=UserPublic)
 def read_current_user(

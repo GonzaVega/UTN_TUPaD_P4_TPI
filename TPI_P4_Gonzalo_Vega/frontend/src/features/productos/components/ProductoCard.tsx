@@ -38,7 +38,7 @@ export const ProductoCard: React.FC<ProductoCardProps> = ({ producto }) => {
       padding="none"
       className="overflow-hidden flex flex-col hover:shadow-md transition-shadow duration-200 border-slate-200"
     >
-      {/* Imagen */}
+
       <div className="relative w-full h-48 bg-slate-100 overflow-hidden flex items-center justify-center">
         {producto.imagen_url ? (
           <img
@@ -51,14 +51,12 @@ export const ProductoCard: React.FC<ProductoCardProps> = ({ producto }) => {
           <span className="text-4xl select-none">🍔</span>
         )}
 
-        {/* Badge de Categoría */}
         {producto.categoria && (
           <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs text-slate-800 text-[11px] font-bold px-2.5 py-1 rounded-full shadow-xs border border-slate-100">
             {producto.categoria.nombre}
           </span>
         )}
 
-        {/* Badge de Disponibilidad */}
         {(noDisponible || sinStock) && (
           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-[1px] flex items-center justify-center">
             <span className="bg-rose-600 text-white font-bold text-xs uppercase px-3 py-1.5 rounded-lg shadow-md">
@@ -68,7 +66,6 @@ export const ProductoCard: React.FC<ProductoCardProps> = ({ producto }) => {
         )}
       </div>
 
-      {/* Contenido */}
       <div className="p-5 flex-1 flex flex-col">
         <div className="flex-1">
           <h3 className="font-bold text-slate-900 text-lg leading-snug line-clamp-1">
@@ -79,7 +76,6 @@ export const ProductoCard: React.FC<ProductoCardProps> = ({ producto }) => {
           </p>
         </div>
 
-        {/* Precio y Stock */}
         <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
           <div>
             <span className="text-xs text-slate-400 block font-medium">Precio</span>
@@ -100,7 +96,6 @@ export const ProductoCard: React.FC<ProductoCardProps> = ({ producto }) => {
           </div>
         </div>
 
-        {/* Botón Acción */}
         <div className="mt-4">
           <Button
             variant={puedeComprar ? "primary" : "outline"}

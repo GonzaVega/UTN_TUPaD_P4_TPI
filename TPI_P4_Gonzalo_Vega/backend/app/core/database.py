@@ -6,18 +6,14 @@ engine = create_engine(
     echo=False,
 )
 
-
 def session_factory() -> Session:
-    """Crea y devuelve una nueva sesión de SQLModel."""
     return Session(engine)
 
-
 def create_all_tables() -> None:
-    """Importa todos los modelos de tabla y crea las tablas en PostgreSQL."""
-    import app.modules.usuarios.models  # noqa: F401
-    import app.modules.categorias.models  # noqa: F401
-    import app.modules.productos.models  # noqa: F401
-    import app.modules.pedidos.models  # noqa: F401
+    import app.modules.usuarios.models
+    import app.modules.categorias.models
+    import app.modules.productos.models
+    import app.modules.pedidos.models
 
     SQLModel.metadata.create_all(engine)
 

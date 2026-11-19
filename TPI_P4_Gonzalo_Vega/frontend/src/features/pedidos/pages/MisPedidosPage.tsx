@@ -23,7 +23,7 @@ export const MisPedidosPage: React.FC = () => {
     if (confirm("¿Estás seguro de que deseas cancelar este pedido?")) {
       try {
         await cancelarMutation.mutateAsync(pedidoId);
-        // Si el modal está abierto para este pedido, actualizamos la vista
+
         if (pedidoSeleccionado?.id === pedidoId) {
           setPedidoSeleccionado(null);
         }
@@ -92,7 +92,6 @@ export const MisPedidosPage: React.FC = () => {
                   </span>
                 </div>
 
-                {/* Ítems del pedido */}
                 <div className="py-3 space-y-1">
                   {p.items.map((item, idx) => (
                     <div key={idx} className="flex justify-between text-xs text-slate-700">
@@ -106,7 +105,6 @@ export const MisPedidosPage: React.FC = () => {
                   ))}
                 </div>
 
-                {/* Pie de pedido */}
                 <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <span className="text-[11px] text-slate-400 block">
@@ -126,7 +124,6 @@ export const MisPedidosPage: React.FC = () => {
                       Ver Detalle
                     </button>
 
-                    {/* Botón cancelar visible únicamente en estado PENDIENTE (RN-04) */}
                     {p.estado === "PENDIENTE" && (
                       <button
                         type="button"
@@ -144,7 +141,6 @@ export const MisPedidosPage: React.FC = () => {
         </div>
       )}
 
-      {/* Modal de Detalle */}
       <Modal
         isOpen={Boolean(pedidoSeleccionado)}
         onClose={() => setPedidoSeleccionado(null)}

@@ -81,7 +81,7 @@ export const RegisterPage: React.FC = () => {
           }}
           className="space-y-4"
         >
-          {/* Username */}
+
           <form.Field name="username">
             {(field) => (
               <div>
@@ -110,7 +110,6 @@ export const RegisterPage: React.FC = () => {
             )}
           </form.Field>
 
-          {/* Full Name */}
           <form.Field name="full_name">
             {(field) => (
               <div>
@@ -139,7 +138,6 @@ export const RegisterPage: React.FC = () => {
             )}
           </form.Field>
 
-          {/* Email */}
           <form.Field name="email">
             {(field) => (
               <div>
@@ -168,7 +166,6 @@ export const RegisterPage: React.FC = () => {
             )}
           </form.Field>
 
-          {/* Password */}
           <form.Field name="password">
             {(field) => (
               <div>

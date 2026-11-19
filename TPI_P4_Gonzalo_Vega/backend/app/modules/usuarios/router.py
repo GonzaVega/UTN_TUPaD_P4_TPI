@@ -12,10 +12,8 @@ from app.modules.usuarios.unit_of_work import UsuarioUnitOfWork
 
 router = APIRouter(prefix="/admin/usuarios", tags=["Usuarios (Admin)"])
 
-
 def get_usuario_service() -> UsuarioService:
     return UsuarioService(UsuarioUnitOfWork())
-
 
 @router.get("", response_model=List[UserPublic])
 def listar_usuarios(
@@ -23,7 +21,6 @@ def listar_usuarios(
     service: UsuarioService = Depends(get_usuario_service),
 ) -> List[UserPublic]:
     return service.listar_usuarios()
-
 
 @router.post("/{id}/activar", response_model=UserPublic)
 def activar_usuario(
@@ -35,7 +32,6 @@ def activar_usuario(
         return service.activar_usuario(id)
     except UsuarioNoEncontrado as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
-
 
 @router.post("/{id}/desactivar", response_model=UserPublic)
 def desactivar_usuario(

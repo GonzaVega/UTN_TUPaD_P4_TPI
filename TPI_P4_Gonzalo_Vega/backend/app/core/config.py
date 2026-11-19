@@ -1,8 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
 class Settings(BaseSettings):
-    """Configuración central leída desde variables de entorno o archivo .env."""
 
     DATABASE_URL: str = "postgresql:///foodstore_db"
     SECRET_KEY: str = "cambiar-esta-clave-de-al-menos-32-caracteres"
@@ -15,7 +13,6 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
-
 
 settings = Settings()
 

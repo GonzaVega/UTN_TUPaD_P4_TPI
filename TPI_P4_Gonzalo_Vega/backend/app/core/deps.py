@@ -1,17 +1,14 @@
 from typing import Callable, List, Optional
 from fastapi import Depends, HTTPException, Request, status
-from sqlmodel import Session, select
+from sqlmodel import select
 from app.core.database import session_factory
 from app.core.security import JWTError, decode_access_token
 
-
-def get_current_user(request: Request) -> "app.modules.usuarios.models.Usuario":  # type: ignore # noqa: F821
-    """Extrae y valida el JWT de la cookie access_token (o del header Authorization)."""
+def get_current_user(request: Request) -> "app.modules.usuarios.models.Usuario":
     from app.modules.usuarios.models import Usuario
 
     token: Optional[str] = request.cookies.get("access_token")
 
-    # Fallback opcional para herramientas como Swagger /docs
     if not token:
         auth_header = request.headers.get("Authorization")
         if auth_header and auth_header.startswith("Bearer "):
@@ -47,11 +44,9 @@ def get_current_user(request: Request) -> "app.modules.usuarios.models.Usuario":
             )
         return user
 
-
 def get_current_active_user(
-    current_user: "app.modules.usuarios.models.Usuario" = Depends(get_current_user),  # type: ignore # noqa: F821
-) -> "app.modules.usuarios.models.Usuario":  # type: ignore # noqa: F821
-    """Verifica que el usuario autenticado no se encuentre desactivado."""
+    current_user: "app.modules.usuarios.models.Usuario" = Depends(get_current_user),
+) -> "app.modules.usuarios.models.Usuario":
     if current_user.disabled:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -59,13 +54,11 @@ def get_current_active_user(
         )
     return current_user
 
-
 def require_role(allowed_roles: List[str]) -> Callable:
-    """Fábrica de dependencias que valida si el rol del usuario activo está autorizado."""
 
     def role_checker(
-        current_user: "app.modules.usuarios.models.Usuario" = Depends(get_current_active_user),  # type: ignore # noqa: F821
-    ) -> "app.modules.usuarios.models.Usuario":  # type: ignore # noqa: F821
+        current_user: "app.modules.usuarios.models.Usuario" = Depends(get_current_active_user),
+    ) -> "app.modules.usuarios.models.Usuario":
         if current_user.role not in allowed_roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
