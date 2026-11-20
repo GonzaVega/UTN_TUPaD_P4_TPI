@@ -7,7 +7,7 @@
 **Profesor:** Luciano Chiroli  
 **Estudiante:** Gonzalo Vega  
 **Repositorio GitHub:** [https://github.com/GonzaVega/UTN_TUPaD_P4_TPI](https://github.com/GonzaVega/UTN_TUPaD_P4_TPI)  
-**Video de Demostración:** `[Pegar aquí enlace público de YouTube / Drive / Loom]`
+**Video de Demostración:** [https://youtu.be/qbT9az4GZIE](https://youtu.be/qbT9az4GZIE)
 
 ---
 
